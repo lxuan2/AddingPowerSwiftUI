@@ -1,12 +1,12 @@
 import XCTest
-@testable import AddPowerSwiftUI
+@testable import AddingPowerSwiftUI
 
-final class AddPowerSwiftUITests: XCTestCase {
+final class AddingPowerSwiftUITests: XCTestCase {
     func testExample() {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct
         // results.
-        XCTAssertEqual(AddPowerSwiftUI().text, "Hello, World!")
+        XCTAssertEqual(AddingPowerSwiftUI().text, "Hello, World!")
     }
 
     static var allTests = [
