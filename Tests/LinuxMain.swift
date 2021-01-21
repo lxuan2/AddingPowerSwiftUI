@@ -1,7 +1,7 @@
 import XCTest
 
-import AddPowerSwiftUITests
+import AddingPowerSwiftUITests
 
 var tests = [XCTestCaseEntry]()
-tests += AddPowerSwiftUITests.allTests()
+tests += AddingPowerSwiftUITests.allTests()
 XCTMain(tests)
