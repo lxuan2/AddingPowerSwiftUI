@@ -7,9 +7,9 @@
 
 import SwiftUI
 
-public protocol APAnyViewPreferenceKey: PreferenceKey where Value == APAnyView? {}
+public protocol APAnyUniqueViewPreferenceKey: PreferenceKey where Value == APAnyUniqueView? {}
 
-extension APAnyViewPreferenceKey {
+extension APAnyUniqueViewPreferenceKey {
     public static var defaultValue: Self.Value {
         nil
     }

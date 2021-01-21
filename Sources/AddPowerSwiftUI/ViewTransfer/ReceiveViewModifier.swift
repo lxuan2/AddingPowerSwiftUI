@@ -7,11 +7,11 @@
 
 import SwiftUI
 
-public struct ReceiveViewModifier<K: APAnyViewPreferenceKey>: ViewModifier {
+public struct ReceiveViewModifier<K: APAnyUniqueViewPreferenceKey>: ViewModifier {
     let key: K.Type
-    let value: Binding<APAnyView?>
+    let value: Binding<APAnyUniqueView?>
     
-    public init(_ key: K.Type, value: Binding<APAnyView?>) {
+    public init(_ key: K.Type, value: Binding<APAnyUniqueView?>) {
         self.key = key
         self.value = value
     }
@@ -25,7 +25,7 @@ public struct ReceiveViewModifier<K: APAnyViewPreferenceKey>: ViewModifier {
 }
 
 extension View {
-    public func onReceiveView<K: APAnyViewPreferenceKey>(_ key: K.Type, value: Binding<APAnyView?>) -> some View {
+    public func onReceiveView<K: APAnyUniqueViewPreferenceKey>(_ key: K.Type, value: Binding<APAnyUniqueView?>) -> some View {
         modifier(ReceiveViewModifier(key, value: value))
     }
 }

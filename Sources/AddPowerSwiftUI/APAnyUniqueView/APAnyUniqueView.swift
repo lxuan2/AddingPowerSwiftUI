@@ -7,8 +7,10 @@
 
 import SwiftUI
 
-public struct APAnyView: UIViewControllerRepresentable, Equatable {
-    public var storage: APAnyViewStorageBase
+/// Can be passed through without worry, but only can be used as View in one place
+/// Usage: transfer one view to another place for rendering
+public struct APAnyUniqueView: UIViewControllerRepresentable, Equatable {
+    public var storage: APAnyUniqueViewStorageBase
     
     public func makeUIViewController(context: Context) -> UIViewController {
         storage.makeUIViewController()
