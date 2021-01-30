@@ -1,5 +1,5 @@
 //
-//  APNavigationHostingView.swift
+//  APStackNavigationHostingView.swift
 //  
 //
 //  Created by Xuan Li on 1/21/21.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-public struct APNavigationHostingView<Master: View, Detail: View>: UIViewControllerRepresentable {
+public struct APStackNavigationHostingView<Master: View, Detail: View>: UIViewControllerRepresentable {
     let master: Master
     let detail: Detail?
     @Binding var navigationController: APNavigationControllerHolder
