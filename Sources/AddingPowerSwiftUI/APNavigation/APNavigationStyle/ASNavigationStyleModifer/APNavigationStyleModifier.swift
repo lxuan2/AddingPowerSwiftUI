@@ -1,5 +1,5 @@
 //
-//  APAnyNavigationStyle.swift
+//  APNavigationStyleModifier.swift
 //  
 //
 //  Created by Xuan Li on 2/1/21.
@@ -7,11 +7,11 @@
 
 import SwiftUI
 
-public struct APAnyNavigationStyle: APNavigationStyle {
+public struct APNavigationStyleModifier: ViewModifier {
     private let makeBody: (APNavigationViewStyleConfiguration) -> APAnyUIView
     
-    public func body(configuration: APNavigationViewStyleConfiguration) -> some View {
-        makeBody(configuration)
+    public func body(content: Content) -> some View {
+        makeBody(APNavigationViewStyleConfiguration(content))
     }
     
     public init<S: APNavigationStyle>(_ style: S) {

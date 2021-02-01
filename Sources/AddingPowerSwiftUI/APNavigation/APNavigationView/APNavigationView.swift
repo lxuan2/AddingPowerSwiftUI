@@ -9,11 +9,11 @@ import SwiftUI
 
 public struct APNavigationView<Content: View>: View {
     let content: Content
-    @Environment(\.apNavigationStyle) var style
+    @Environment(\.apNavigationStyleModifer) var styleModifer
     
     public var body: some View {
-        style
-            .body(configuration: APNavigationViewStyleConfiguration(content))
+        content
+            .modifier(styleModifer)
             .edgesIgnoringSafeArea(.all)
     }
     
