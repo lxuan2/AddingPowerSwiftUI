@@ -12,7 +12,9 @@ public struct APNavigationView<Content: View>: View {
     @Environment(\.apNavigationStyle) var style
     
     public var body: some View {
-        style.body(configuration: APNavigationViewStyleConfiguration(content))
+        style
+            .body(configuration: APNavigationViewStyleConfiguration(content))
+            .edgesIgnoringSafeArea(.all)
     }
     
     public init(@ViewBuilder content: () -> Content) {

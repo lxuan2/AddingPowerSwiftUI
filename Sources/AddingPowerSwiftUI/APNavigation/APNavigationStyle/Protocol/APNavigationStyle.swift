@@ -13,11 +13,11 @@ public protocol APNavigationStyle {
 }
 
 public struct APNavigationViewStyleConfiguration {
-    public typealias Content = APAnyUIView
+    public typealias Content = ModifiedContent<APAnyUIView, _SafeAreaIgnoringLayout>
     
     public let content: APNavigationViewStyleConfiguration.Content
     
     public init<V: View>(_ v: V) {
-        content = APAnyUIView(v)
+        content = APAnyUIView(v).modifier(_SafeAreaIgnoringLayout(edges: .all))
     }
 }
