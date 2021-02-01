@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-public struct APStackNavigationViewStyle: NavigationViewStyle {
-    public func _body(configuration: _NavigationViewStyleConfiguration) -> some View {
+public struct APStackNavigationStyle: APNavigationStyle {
+    public func body(configuration: APNavigationViewStyleConfiguration) -> some View {
         APStackNavigationView(content: configuration.content)
     }
     

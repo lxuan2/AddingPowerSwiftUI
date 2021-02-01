@@ -19,4 +19,8 @@ public struct APStackNavigationView<Content: View>: View {
                 navigationController.vc?.setNavigationBarHidden(hidden, animated: true)
             }
     }
+    
+    public init(content: Content) {
+        self.content = content
+    }
 }
