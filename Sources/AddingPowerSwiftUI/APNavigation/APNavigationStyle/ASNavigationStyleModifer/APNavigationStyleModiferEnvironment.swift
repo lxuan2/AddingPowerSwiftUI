@@ -8,11 +8,11 @@
 import SwiftUI
 
 public struct APNavigationStyleModiferEnvironmentKey: EnvironmentKey {
-    public static let defaultValue = APNavigationStyleModifier(APStackNavigationStyle())
+    public static let defaultValue = _APNavigationViewStyleModifier(APStackNavigationViewStyle())
 }
 
 extension EnvironmentValues {
-    public var apNavigationStyleModifer: APNavigationStyleModifier  {
+    public var apNavigationStyleModifer: _APNavigationViewStyleModifier  {
         get {
             return self[APNavigationStyleModiferEnvironmentKey.self]
         }
@@ -23,7 +23,7 @@ extension EnvironmentValues {
 }
 
 extension View {
-    public func apNavigationStyle<S: APNavigationStyle>(_ style: S) -> some View {
-        environment(\.apNavigationStyleModifer, APNavigationStyleModifier(style))
+    public func apNavigationViewStyle<S: APNavigationViewStyle>(_ style: S) -> some View {
+        environment(\.apNavigationStyleModifer, _APNavigationViewStyleModifier(style))
     }
 }
