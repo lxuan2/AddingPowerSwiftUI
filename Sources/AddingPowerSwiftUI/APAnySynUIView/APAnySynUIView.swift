@@ -1,5 +1,5 @@
 //
-//  APAnyView.swift
+//  APAnySynUIView.swift
 //  IOS6Navigation
 //
 //  Created by Xuan Li on 1/20/21.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-/// An `APAnyUniqueView` is a type erasing view used for transfering one view to
+/// An `APAnySynUIView` is a type erasing view used for transfering one view to
 /// antoher place for rendering. Note: each storage maintains one uiviewcontroller at
 /// a time. In other words, `makeUIViewController(context:)` can only be
 /// called once.
@@ -17,8 +17,8 @@ import SwiftUI
 /// location which rendered it. This is a very effiecent method to make and update
 /// the view when transfering one view to another place through envrionment or
 /// preference path.
-public struct APAnyUniqueView: UIViewControllerRepresentable, Equatable {
-    public var storage: APAnyUniqueViewStorageBase
+public struct APAnySynUIView: UIViewControllerRepresentable, Equatable {
+    public var storage: APAnySynUIViewStorageBase
     
     public func makeUIViewController(context: Context) -> UIViewController {
         storage.makeUIViewController()
@@ -28,5 +28,9 @@ public struct APAnyUniqueView: UIViewControllerRepresentable, Equatable {
     
     @inlinable public func makeUIViewController() -> UIViewController {
         storage.makeUIViewController()
+    }
+    
+    @inlinable public func makeUIView() -> UIView {
+        storage.makeUIViewController().view
     }
 }

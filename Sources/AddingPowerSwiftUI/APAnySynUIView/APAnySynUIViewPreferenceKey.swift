@@ -1,5 +1,5 @@
 //
-//  APAnyViewPreferenceKey.swift
+//  APAnySynUIViewPreferenceKey.swift
 //  IOS6Navigation
 //
 //  Created by Xuan Li on 1/20/21.
@@ -7,9 +7,9 @@
 
 import SwiftUI
 
-public protocol APAnyUniqueViewPreferenceKey: PreferenceKey where Value == APAnyUniqueView? {}
+public protocol APAnySynUIViewPreferenceKey: PreferenceKey where Value == APAnySynUIView? {}
 
-extension APAnyUniqueViewPreferenceKey {
+extension APAnySynUIViewPreferenceKey {
     public static var defaultValue: Self.Value {
         nil
     }

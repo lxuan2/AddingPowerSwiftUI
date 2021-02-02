@@ -9,7 +9,7 @@ import SwiftUI
 
 public struct APNavigationTitle: Equatable {
     public var text: String
-    public var view: APAnyUniqueView?
+    public var view: APAnySynUIView?
 }
 
 public struct APNavigationTitlePreferenceKey: PreferenceKey {
