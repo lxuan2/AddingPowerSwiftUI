@@ -13,8 +13,6 @@ extension View {
     }
     
     public func apNavigationTitle<V>(_ title: () -> V) -> some View where V : View {
-        transferView(APNavigationTitlePreferenceKey.self, value: title()) { v in
-            APNavigationTitle(text: "", view: v)
-        }
+        transferView(APNavigationTitlePreferenceKey.self, value: title())
     }
 }

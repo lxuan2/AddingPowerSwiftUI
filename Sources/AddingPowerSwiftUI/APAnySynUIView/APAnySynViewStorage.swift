@@ -1,5 +1,5 @@
 //
-//  APAnySynUIViewStorage.swift
+//  APAnySynViewStorage.swift
 //  IOS6Navigation
 //
 //  Created by Xuan Li on 1/20/21.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-public class APAnySynUIViewStorage<V: View> : APAnySynUIViewStorageBase {
+public class APAnySynViewStorage<V: View> : APAnySynViewStorageBase {
     private var view: V?
     private var subscribers: [Weak<UIHostingController<V>>]
     
