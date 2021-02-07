@@ -19,8 +19,10 @@ public struct TransferViewModifier<K: APAnySynUIViewPreferenceKey, V: View>: Vie
     
     public func body(content: Content) -> some View {
         storage.updateView(value)
-        return content
-            .preference(key: key, value: K.resolve(APAnySynView(storage: storage)))
+        return APIDView(id: storage.id) {
+            content
+                .preference(key: key, value: K.resolve(APAnySynView(storage: storage)))
+        }.equatable()
     }
 }
 

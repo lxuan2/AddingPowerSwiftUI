@@ -14,7 +14,7 @@ public struct APNavigationViewStyleModifier: EnvironmentalModifier {
 }
 
 public struct _APNavigationViewStyleModifier: ViewModifier {
-    private let makeBody: (APNavigationViewStyleConfiguration) -> APAnyUIView
+    private let makeBody: (APNavigationViewStyleConfiguration) -> APAnyRepresentable
     
     public func body(content: Content) -> some View {
         makeBody(APNavigationViewStyleConfiguration(content))
@@ -22,7 +22,7 @@ public struct _APNavigationViewStyleModifier: ViewModifier {
     
     public init<S: APNavigationViewStyle>(_ style: S) {
         self.makeBody = {
-            APAnyUIView(style.body(configuration: $0))
+            APAnyRepresentable(style.body(configuration: $0))
         }
     }
 }

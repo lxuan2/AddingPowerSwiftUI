@@ -1,5 +1,5 @@
 //
-//  APAnyUIView.swift
+//  APAnyRepresentable.swift
 //  
 //
 //  Created by Xuan Li on 2/1/21.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-public struct APAnyUIView: UIViewControllerRepresentable {
+public struct APAnyRepresentable: UIViewControllerRepresentable {
     private let _makeUIViewController: () -> UIViewController
     private let _updateUIViewController: (UIViewController) -> ()
     
