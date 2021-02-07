@@ -26,8 +26,29 @@ struct APMonitorModifier<V: APView, Delegate: APMonitorDelegate>: ViewModifier {
     }
 }
 
+struct APCatchModifier<Delegate: APMonitorDelegate>: ViewModifier {
+    let delegate: Delegate
+    @StateObject var object = APMonitorObject()
+    
+    func body(content: Content) -> some View {
+        content
+            .onPreferenceChange(APViewBuilderPreferenceKey.self) { current in
+                delegate.updateViews(from: object.previous, to: current)
+                object.previous = current
+            }
+    }
+    
+    class APMonitorObject: ObservableObject {
+        var previous: [APAnySynView] = []
+    }
+}
+
 extension View {
-    public func monitorViews<V: APView, MonitorDelegate: APMonitorDelegate>(_ view: V, _ delegate: MonitorDelegate) -> some View {
+    public func monitorViews<V: APView, Delegate: APMonitorDelegate>(_ view: V, _ delegate: Delegate) -> some View {
         self.modifier(APMonitorModifier(view: view, delegate: delegate))
+    }
+    
+    public func catchViews<Delegate: APMonitorDelegate>(_ delegate: Delegate) -> some View {
+        self.modifier(APCatchModifier(delegate: delegate))
     }
 }

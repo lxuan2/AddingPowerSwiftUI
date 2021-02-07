@@ -7,16 +7,18 @@
 
 import SwiftUI
 
-public struct APNavigationView<Content: View>: View {
+public struct APNavigationView<Content: APView>: View {
     let content: Content
+    @Environment(\.apNavigationStyleModifer) var style
     
     public var body: some View {
-        content
+        Spacer()
+            .modifier(content)
             .modifier(APNavigationViewStyleModifier())
             .edgesIgnoringSafeArea(.all)
     }
     
-    public init(@ViewBuilder content: () -> Content) {
+    public init(@APViewBuilder content: () -> Content) {
         self.content = content()
     }
 }

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-public protocol APNavigationViewStyle: NavigationViewStyle {
+public protocol APNavigationViewStyle {
     associatedtype APBody : View
     func body(configuration: APNavigationViewStyleConfiguration) -> Self.APBody
 }

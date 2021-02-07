@@ -12,9 +12,5 @@ public struct APStackNavigationViewStyle: APNavigationViewStyle {
         APStackNavigationView(content: configuration.content)
     }
     
-    public func _body(configuration: _NavigationViewStyleConfiguration) -> some View {
-        APStackNavigationView(content: configuration.content)
-    }
-    
     public init() {}
 }

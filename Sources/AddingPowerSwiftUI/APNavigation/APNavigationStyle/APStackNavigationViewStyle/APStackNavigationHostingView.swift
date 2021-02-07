@@ -7,13 +7,12 @@
 
 import SwiftUI
 
-public struct APStackNavigationHostingView<Master: View, Detail: View>: UIViewControllerRepresentable {
-    let master: Master
-    let detail: Detail?
+public struct APStackNavigationHostingView: UIViewControllerRepresentable, Equatable {
+    let root: APAnySynView?
     @Binding var navigationController: APNavigationControllerHolder
     
     public func makeUIViewController(context: Context) -> UINavigationController {
-        let rvc = APNavigationPageController(rootView: master)
+        let rvc = APNavigationPageController(rootView: root.edgesIgnoringSafeArea(.all))
         let nvc = APNavigationController(rootViewController: rvc)
         DispatchQueue.main.async {
             navigationController = APNavigationControllerHolder(vc: nvc)
@@ -22,7 +21,11 @@ public struct APStackNavigationHostingView<Master: View, Detail: View>: UIViewCo
     }
     
     public func updateUIViewController(_ uiViewController: UINavigationController, context: Context) {
-        let rvc = uiViewController.viewControllers[0] as! APNavigationPageController<Master>
-        rvc.wrappedRootView = master
+        let rvc = APNavigationPageController(rootView: root.edgesIgnoringSafeArea(.all))
+        uiViewController.viewControllers[0] = rvc
+    }
+    
+    public static func == (lhs: APStackNavigationHostingView, rhs: APStackNavigationHostingView) -> Bool {
+        lhs.root?.id == rhs.root?.id
     }
 }
