@@ -9,7 +9,7 @@ import SwiftUI
 
 public struct APStackNavigationViewStyle: APNavigationViewStyle {
     public func body(configuration: APNavigationViewStyleConfiguration) -> some View {
-        APStackNavigationView(content: configuration.content)
+        APStackNavigationView(rootSource: configuration.content)
     }
     
     public init() {}

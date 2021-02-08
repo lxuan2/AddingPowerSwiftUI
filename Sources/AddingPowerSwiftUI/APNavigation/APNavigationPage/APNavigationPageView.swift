@@ -10,7 +10,6 @@ import SwiftUI
 public struct APNavigationPageView<Content: View>: View {
     let content: Content
     weak var navigationItem: UINavigationItem?
-    @State var title: UUID?
     
     public var body: some View {
         content

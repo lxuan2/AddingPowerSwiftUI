@@ -22,6 +22,6 @@ Therefore, we wonder we can interpret the view manually. There are several requi
 
 This package achieves these goals in a very efficient way and it seems likes native APIs. No complicated usage. Only replace `@ViewBuilder` with `@APViewBuilder` for the input view. To interpret it inside the container view, just attach `.monitorViews(inputView, APMonitorDelegate)` to a view and implement the delegate to get a list of parsed views. No worry to view content updates, since they update themselves. If views are added or removed, the delegate you provide can handle them. For more implementation details, refer to the documentation for `@APViewBuilder`.
 
-`AddingPowerSwiftUI` also provide other missing handy APIs like `StyleModifier`, which allows view styles for your own view. This is a similar behavior to `StackNavigationViewStyle` and `DoubleColumnNavigationViewStyle`.
+`AddingPowerSwiftUI` also provide other missing handy APIs like `StyleModifier` and customizable `APNavigationView`. This is a similar behavior to `StackNavigationViewStyle` and `DoubleColumnNavigationViewStyle` but allows building your own view styles.
 
 In all, `AddingPowerSwiftUI` is created to provide more control for developers to `SwiftUI` framework.

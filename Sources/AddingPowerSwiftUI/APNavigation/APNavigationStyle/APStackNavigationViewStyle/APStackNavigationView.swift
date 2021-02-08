@@ -7,37 +7,40 @@
 
 import SwiftUI
 
-public struct APStackNavigationView: View {
+public struct APStackNavigationView<RootSource: View>: View {
     @State var navigationController = APNavigationControllerHolder()
     @State var root: APAnySynView? = nil
-    let content: Content
+    let rootSource: RootSource
     
     public var body: some View {
         APStackNavigationHostingView(root: root, navigationController: $navigationController)
             .equatable()
             .environment(\.apNavigationController, navigationController)
-            .edgesIgnoringSafeArea(.all)
             .onPreferenceChange(APNavigationBarHiddenPreferenceKey.self) { hidden in
                 navigationController.vc?.setNavigationBarHidden(hidden, animated: true)
             }
-            .background(content.catchViews(APStackNavigationDelegate(content: $root)))
+            .edgesIgnoringSafeArea(.all)
+            .background(rootSource.catchViews(MonitorDelegate(content: $root)))
     }
     
-    public init(content: Content) {
-        self.content = content
+    public init(rootSource: RootSource) {
+        self.rootSource = rootSource
     }
     
-    public typealias Content = _ViewModifier_Content<_APNavigationViewStyleModifier>
-}
+    public init<Content: APView>(@APViewBuilder content: () -> Content) where RootSource == ModifiedContent<Spacer, Content> {
+        self.rootSource = Spacer().modifier(content())
+    }
+    
+    public struct MonitorDelegate: APMonitorDelegate {
+        let content: Binding<APAnySynView?>
+        
+        public func updateViews(from previous: [APAnySynView], to current: [APAnySynView]) {
+            content.wrappedValue = current.first!
+        }
+        
+        public init(content: Binding<APAnySynView?>) {
+            self.content = content
+        }
+    }
 
-public struct APStackNavigationDelegate: APMonitorDelegate {
-    let content: Binding<APAnySynView?>
-    
-    public func updateViews(from previous: [APAnySynView], to current: [APAnySynView]) {
-        content.wrappedValue = current.first!
-    }
-    
-    public init(content: Binding<APAnySynView?>) {
-        self.content = content
-    }
 }
