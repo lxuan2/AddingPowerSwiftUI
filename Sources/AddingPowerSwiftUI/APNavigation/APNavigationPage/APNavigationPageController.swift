@@ -7,9 +7,9 @@
 
 import SwiftUI
 
-public class APNavigationPageController<Content: View>: UIHostingController<APNavigationPageView<Content>> {
+public class APNavigationPageController<InternelContent: View>: UIHostingController<APNavigationPageView<InternelContent>> {
 
-    public init(rootView: Content) {
+    public init(rootView: InternelContent) {
         super.init(rootView: APNavigationPageView(content: rootView, navigationItem: nil))
         self.rootView = APNavigationPageView(content: rootView, navigationItem: self.navigationItem)
     }
@@ -18,7 +18,7 @@ public class APNavigationPageController<Content: View>: UIHostingController<APNa
         fatalError("init(coder:) has not been implemented")
     }
     
-    public var wrappedRootView: Content {
+    public var wrappedRootView: InternelContent {
         set {
             self.rootView = APNavigationPageView(content: newValue, navigationItem: self.navigationItem)
         }

@@ -7,40 +7,42 @@
 
 import SwiftUI
 
-public struct APStackNavigationView<RootSource: View>: View {
-    @State var navigationController = APNavigationControllerHolder()
-    @State var root: APAnySynView? = nil
-    let rootSource: RootSource
+public struct APStackNavigationView<Source: View>: View {
+    @StateObject var nvc = APNavigationController(rootViewController: UIViewController())
+    let source: Source
     
     public var body: some View {
-        APStackNavigationHostingView(root: root, navigationController: $navigationController)
-            .equatable()
-            .environment(\.apNavigationController, navigationController)
+        APNavigationHostingView(nvc: nvc)
+            .environment(\.apNavigationController, APNavigationControllerHolder(vc: nvc))
             .onPreferenceChange(APNavigationBarHiddenPreferenceKey.self) { hidden in
-                navigationController.vc?.setNavigationBarHidden(hidden, animated: true)
+                nvc.setNavigationBarHidden(hidden, animated: true)
             }
             .edgesIgnoringSafeArea(.all)
-            .background(rootSource.catchViews(MonitorDelegate(content: $root)))
+            .background(source.catchViews(MonitorDelegate(nvc: nvc)))
     }
     
-    public init(rootSource: RootSource) {
-        self.rootSource = rootSource
+    public init(source: Source) {
+        self.source = source
     }
     
-    public init<Content: APView>(@APViewBuilder content: () -> Content) where RootSource == ModifiedContent<Spacer, Content> {
-        self.rootSource = Spacer().modifier(content())
+    public init<Content: APView>(@APViewBuilder content: () -> Content) where Source == ModifiedContent<Spacer, Content> {
+        self.source = Spacer().modifier(content())
     }
-    
-    public struct MonitorDelegate: APMonitorDelegate {
-        let content: Binding<APAnySynView?>
-        
-        public func updateViews(from previous: [APAnySynView], to current: [APAnySynView]) {
-            content.wrappedValue = current.first!
-        }
-        
-        public init(content: Binding<APAnySynView?>) {
-            self.content = content
-        }
-    }
+}
 
+extension APStackNavigationView {
+    private struct MonitorDelegate: APMonitorDelegate {
+        weak var nvc: UINavigationController?
+        
+        func updateViews(from previous: [APAnySynView], to current: [APAnySynView]) {
+            if (current.first != previous.first) {
+                let rvc = APNavigationPageController(rootView: current.first.edgesIgnoringSafeArea(.all))
+                nvc!.viewControllers[0] = rvc
+            }
+        }
+        
+        init(nvc: UINavigationController?) {
+            self.nvc = nvc
+        }
+    }
 }
