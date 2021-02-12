@@ -9,4 +9,5 @@ import SwiftUI
 
 public protocol APAnySynUIViewPreferenceKey: PreferenceKey where Value: Equatable {
     static func resolve(_ view: APAnySynView) -> Value
+    static func transform(_ value: inout Value, _ view: APAnySynView)
 }

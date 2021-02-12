@@ -7,9 +7,9 @@
 
 import SwiftUI
 
-public struct APStackNavigationView<Source: View>: View {
+public struct APStackNavigationView<Content: View>: View {
     @StateObject var nvc = APNavigationController(rootViewController: UIViewController())
-    let source: Source
+    let content: Content
     
     public var body: some View {
         APNavigationHostingView(nvc: nvc)
@@ -18,26 +18,25 @@ public struct APStackNavigationView<Source: View>: View {
                 nvc.setNavigationBarHidden(hidden, animated: true)
             }
             .edgesIgnoringSafeArea(.all)
-            .background(source.catchViews(MonitorDelegate(nvc: nvc)))
+            .treeView(content, delegate: Delegate(nvc: nvc))
     }
     
-    public init(source: Source) {
-        self.source = source
+    public init(content: Content) {
+        self.content = content
     }
     
-    public init<Content: APView>(@APViewBuilder content: () -> Content) where Source == ModifiedContent<Spacer, Content> {
-        self.source = Spacer().modifier(content())
+    public init(@APViewBuilder content: () -> Content){
+        self.content = content()
     }
 }
 
 extension APStackNavigationView {
-    private struct MonitorDelegate: APMonitorDelegate {
+    private struct Delegate: APVariadicView_Delegate {
         weak var nvc: UINavigationController?
         
-        func updateViews(from previous: [APAnySynView], to current: [APAnySynView]) {
-            if (current.first != previous.first) {
-                let rvc = APNavigationPageController(rootView: current.first.edgesIgnoringSafeArea(.all))
-                nvc!.viewControllers[0] = rvc
+        func operate(at index: Int, remove amount: Int, add newViews: [APAnySynView]) {
+            if index == 0 , let first = newViews.first {
+                nvc?.viewControllers[0] = APNavigationPageController(rootView: first.edgesIgnoringSafeArea(.all))
             }
         }
         

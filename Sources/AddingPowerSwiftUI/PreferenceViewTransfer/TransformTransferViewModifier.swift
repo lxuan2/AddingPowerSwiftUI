@@ -22,9 +22,7 @@ public struct TransformTransferViewModifier<K: APAnySynUIViewPreferenceKey, V: V
         return APIDView(id: storage.id) { 
             content
                 .transformPreference(key) { v in
-                    K.reduce(value: &v) {
-                        K.resolve(APAnySynView(storage: storage))
-                    }
+                    K.transform(&v, APAnySynView(storage: storage))
                 }
         }.equatable()
     }

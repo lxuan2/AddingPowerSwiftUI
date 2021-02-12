@@ -23,4 +23,8 @@ extension APAnySingleSynViewPreferenceKey {
     public static func resolve(_ view: APAnySynView) -> Value {
         view
     }
+    
+    public static func transform(_ value: inout Value, _ view: APAnySynView) {
+        value = view
+    }
 }

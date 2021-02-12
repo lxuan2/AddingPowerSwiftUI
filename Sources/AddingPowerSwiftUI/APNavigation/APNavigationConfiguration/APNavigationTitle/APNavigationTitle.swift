@@ -24,4 +24,8 @@ public struct APNavigationTitlePreferenceKey: APAnySynUIViewPreferenceKey {
     public static func resolve(_ view: APAnySynView) -> APNavigationTitle? {
         APNavigationTitle(text: "", view: view)
     }
+    
+    public static func transform(_ value: inout APNavigationTitle?, _ view: APAnySynView) {
+        value = APNavigationTitle(text: "", view: view)
+    }
 }
