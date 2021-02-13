@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+public protocol APView: View {}
+
 @_functionBuilder
 public struct APViewBuilder {
     
@@ -16,6 +18,10 @@ public struct APViewBuilder {
     
     public static func buildExpression<Content>(_ content: Content) -> some View where Content : View {
         APUnaryContent(content)
+    }
+    
+    public static func buildExpression<Content>(_ content: Content) -> some View where Content : APView {
+        content
     }
     
     public static func buildBlock<Content>(_ content: Content) -> some View where Content : View {
