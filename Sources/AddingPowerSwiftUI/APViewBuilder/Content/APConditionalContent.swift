@@ -9,24 +9,38 @@ import SwiftUI
 
 public struct APConditionalContent<TrueContent, FalseContent>: View where TrueContent : View, FalseContent : View {
     let content: _ConditionalContent<TrueContent, FalseContent>
-    @StateObject private var root = APVariadicView_MultiViewHost()
+    let pathAttribute: APPath.Attribute
+    @StateObject private var viewRoot = APVariadicView_MultiViewHost()
     @EnvironmentObject var coordinator: APVariadicView.Coordinator
     
     public var body: some View {
-        content
-            .onPreferenceChange(APVariadicView_PreferenceKey.self) {
-                coordinator.updateViews($0, with: root, operation: .conditional)
-            }
-            .preference(key: APVariadicView_PreferenceKey.self, value: [.multi(root)])
+        APIDView(id: viewRoot.id) {EmptyView()}.equatable()
+            .overlay(
+                content
+                    .onPreferenceChange(APVariadicView_PreferenceKey.self) {
+                        coordinator.updates(viewRoot: $0, in: viewRoot, atrribute: pathAttribute)
+                    }
+            )
+            .preference(key: APVariadicView_PreferenceKey.self, value: [.multi(viewRoot)])
     }
     
     @usableFromInline
     init(first: TrueContent) {
         self.content = ViewBuilder.buildEither(first: first)
+        pathAttribute = .truePath
     }
     
     @usableFromInline
     init(second: FalseContent) {
         self.content = ViewBuilder.buildEither(second: second)
+        pathAttribute = .falsePath
+    }
+}
+
+public struct APConditionalContentModifier: ViewModifier {
+    let transContent: [APVariadicView]
+    public func body(content: Content) -> some View {
+        content
+            .preference(key: APVariadicView_PreferenceKey.self, value: transContent)
     }
 }

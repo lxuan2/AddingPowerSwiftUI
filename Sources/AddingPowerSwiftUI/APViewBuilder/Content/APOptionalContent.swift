@@ -9,15 +9,18 @@ import SwiftUI
 
 public struct APOptionalContent<Wrapped: View>: View {
     let some: Wrapped?
-    @StateObject private var root = APVariadicView_MultiViewHost()
+    @StateObject private var viewRoot = APVariadicView_MultiViewHost()
     @EnvironmentObject var coordinator: APVariadicView.Coordinator
     
     public var body: some View {
-        some
-            .onPreferenceChange(APVariadicView_PreferenceKey.self) {
-                coordinator.updateViews($0, with: root, operation: .conditional)
-            }
-            .preference(key: APVariadicView_PreferenceKey.self, value: [.multi(root)])
+        APIDView(id: viewRoot.id) {EmptyView()}.equatable()
+            .overlay(
+                some
+                    .onPreferenceChange(APVariadicView_PreferenceKey.self) {
+                        coordinator.updates(viewRoot: $0, in: viewRoot, atrribute: some == nil ? .falsePath : .truePath)
+                    }
+            )
+            .preference(key: APVariadicView_PreferenceKey.self, value: [.multi(viewRoot)])
     }
     
     @usableFromInline

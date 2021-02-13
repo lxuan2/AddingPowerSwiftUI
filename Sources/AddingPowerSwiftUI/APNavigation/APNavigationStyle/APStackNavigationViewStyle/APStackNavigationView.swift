@@ -32,15 +32,16 @@ public struct APStackNavigationView<Content: View>: View {
 
 extension APStackNavigationView {
     private struct Delegate: APVariadicView_Delegate {
-        weak var nvc: UINavigationController?
+        unowned var nvc: APNavigationController
         
-        func operate(at index: Int, remove amount: Int, add newViews: [APAnySynView]) {
-            if index == 0 , let first = newViews.first {
-                nvc?.viewControllers[0] = APNavigationPageController(rootView: first.edgesIgnoringSafeArea(.all))
+        func viewList(_ viewList: [APAnySynView], didReplace range: Range<Int>, with views: [APAnySynView]) {
+            if let first = viewList.first, nvc.rootID != first.id {
+                nvc.rootID = first.id
+                nvc.viewControllers[0] = APNavigationPageController(rootView: first.edgesIgnoringSafeArea(.all))
             }
         }
         
-        init(nvc: UINavigationController?) {
+        init(nvc: APNavigationController) {
             self.nvc = nvc
         }
     }

@@ -8,6 +8,7 @@
 import UIKit
 
 public class APNavigationController: UINavigationController, ObservableObject {
+    public var rootID: UUID?
 
     public override func viewDidLoad() {
         super.viewDidLoad()
