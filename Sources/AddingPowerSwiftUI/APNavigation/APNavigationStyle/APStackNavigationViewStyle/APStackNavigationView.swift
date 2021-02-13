@@ -35,10 +35,15 @@ extension APStackNavigationView {
         unowned var nvc: APNavigationController
         
         func viewList(_ viewList: [APAnySynView], didReplace range: Range<Int>, with views: [APAnySynView]) {
-            if let first = viewList.first, nvc.rootID != first.id {
-                nvc.rootID = first.id
-                nvc.viewControllers[0] = APNavigationPageController(rootView: first.edgesIgnoringSafeArea(.all))
+            if !viewList.contains(where: { $0.id == nvc.rootID }) {
+                initial(viewList)
             }
+        }
+        
+        func initial(_ viewList: [APAnySynView]) {
+            let view = viewList.first!
+            nvc.rootID = view.id
+            nvc.viewControllers[0] = APNavigationPageController(rootView: view.edgesIgnoringSafeArea(.all))
         }
         
         init(nvc: APNavigationController) {

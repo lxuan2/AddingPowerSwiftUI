@@ -19,41 +19,53 @@ extension APVariadicView {
         public var delegate: APVariadicView_Delegate
         public var root: APVariadicView_MultiViewHost
         public var viewList: [APAnySynView]
+        public var cache: [UUID]? = []
         
         public func updates(viewRoot: [APVariadicView], in subRoot: APVariadicView_MultiViewHost, atrribute: APPath.Attribute) {
             if let loc = subRoot.location {
-                let views = initTree(viewRoot, at: loc, atrribute: atrribute)
+                let views = initBranch(viewRoot, at: loc, atrribute: atrribute)
                 let startIndex = root.getIndex(in: loc)
                 let range = startIndex..<startIndex + subRoot.getAmount()
-                delegate.viewList(viewList, willReplace: range, with: views)
-//                if range.lowerBound == viewList.count
+                let isInited = cache == nil
+                if isInited {
+                    delegate.viewList(viewList, willReplace: range, with: views)
+                }
                 viewList.replaceSubrange(range, with: views)
-//                viewList.removeSubrange(range)
-//                viewList.insert(contentsOf: views, at: range.lowerBound)
-                delegate.viewList(viewList, didReplace: range, with: views)
+                if isInited {
+                    delegate.viewList(viewList, didReplace: range, with: views)
+                }
+                if !isInited {
+                    cache!.removeFirst(where: { $0 == subRoot.id })
+                    if cache!.isEmpty {
+                        delegate.initial(viewList)
+                        cache = nil
+                    }
+                }
             }
             subRoot.viewRoot = viewRoot
             subRoot.pathAttribute = atrribute
         }
         
         public func initRoot(with viewRoot: [APVariadicView]) {
-            let views = initTree(viewRoot, at: [], atrribute: .any)
-            delegate.viewList(viewList, willReplace: 0..<0, with: views)
-            viewList.replaceSubrange(0..<0, with: views)
-            delegate.viewList(viewList, didReplace: 0..<0, with: views)
+            viewList = initBranch(viewRoot, at: [], atrribute: .any)
             root.viewRoot = viewRoot
         }
         
-        public func initTree(_ views: [APVariadicView], at location: [APPath], atrribute: APPath.Attribute) -> [APAnySynView] {
+        public func initBranch(_ views: [APVariadicView], at location: [APPath], atrribute: APPath.Attribute) -> [APAnySynView] {
             var newViews: [APAnySynView] = []
             for (i, item) in views.enumerated() {
                 switch item {
                 case .unary(let nv):
                     newViews.append(nv)
                 case .multi(let multiroot):
-                    let loc = location + [APPath(direction: i, attribute: atrribute)]
-                    multiroot.location = loc
-                    newViews.append(contentsOf: initTree(multiroot.viewRoot, at: loc, atrribute: multiroot.pathAttribute))
+                    if multiroot.location == nil {
+                        let loc = location + [APPath(direction: i, attribute: atrribute)]
+                        if cache != nil {
+                            cache!.append(multiroot.id)
+                        }
+                        multiroot.location = loc
+                    }
+                    newViews.append(contentsOf: initBranch(multiroot.viewRoot, at: multiroot.location!, atrribute: multiroot.pathAttribute))
                 }
             }
             return newViews
@@ -63,6 +75,14 @@ extension APVariadicView {
             self.delegate = delegate
             self.root = APVariadicView_MultiViewHost()
             self.viewList = []
+        }
+    }
+}
+
+extension Array {
+    mutating func removeFirst(where: (Element) -> Bool) {
+        if let index = firstIndex(where: `where`) {
+            remove(at: index)
         }
     }
 }
