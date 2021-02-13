@@ -31,19 +31,25 @@ public struct APStackNavigationView<Content: View>: View {
 }
 
 extension APStackNavigationView {
-    private struct Delegate: APVariadicView_Delegate {
+    private struct Delegate: APVariadicView_PrimitiveDelegate {
         unowned var nvc: APNavigationController
         
-        func viewList(_ viewList: [APAnySynView], didReplace range: Range<Int>, with views: [APAnySynView]) {
-            if !viewList.contains(where: { $0.id == nvc.rootID }) {
-                initial(viewList)
+        func subRoot(subRoot: APVariadicView_MultiViewHost, didUpdate newViewRoot: [APVariadicView], in root: APVariadicView_MultiViewHost) {
+            if let loc = nvc.rootLocation {
+                if loc.contains(subRoot.location!) {
+                    nvc.viewControllers[0] = UIViewController()
+                    nvc.rootLocation = nil
+                }
+            } else {
+                initial(root)
             }
         }
         
-        func initial(_ viewList: [APAnySynView]) {
-            let view = viewList.first!
-            nvc.rootID = view.id
-            nvc.viewControllers[0] = APNavigationPageController(rootView: view.edgesIgnoringSafeArea(.all))
+        func initial(_ root: APVariadicView_MultiViewHost) {
+            if let (location, view) = root.getLocationAndView(at: 0) {
+                nvc.viewControllers[0] = APNavigationPageController(rootView: view.edgesIgnoringSafeArea(.all))
+                nvc.rootLocation = location
+            }
         }
         
         init(nvc: APNavigationController) {

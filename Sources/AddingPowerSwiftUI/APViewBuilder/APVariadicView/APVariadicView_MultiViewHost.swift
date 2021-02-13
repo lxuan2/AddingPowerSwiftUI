@@ -55,6 +55,31 @@ public class APVariadicView_MultiViewHost: ObservableObject, Identifiable, Equat
         }
         return amount
     }
+    
+    private func _getLocationAndView(at index: Int, idx: inout Int, current path: [APPath]) -> ([APPath], APAnySynView)? {
+        for (i, item) in viewRoot.enumerated() {
+            switch item {
+            case .unary(let view):
+                idx += 1
+                if idx == index {
+                    return (path + [APPath(direction: i, attribute: .any)], view)
+                }
+            case .multi(let point):
+                if let r = point._getLocationAndView(at: index, idx: &idx, current: path + [APPath(direction: i, attribute: .any)]) {
+                    return r
+                }
+            }
+        }
+        return nil
+    }
+    
+    public func getLocationAndView(at index: Int) -> ([APPath], APAnySynView)? {
+        if index < 0 {
+            return nil
+        }
+        var initalIndex = -1
+        return _getLocationAndView(at: index, idx: &initalIndex, current: [])
+    }
 }
 
 public struct APPath: Equatable {

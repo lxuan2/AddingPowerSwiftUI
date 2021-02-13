@@ -10,7 +10,7 @@ import SwiftUI
 public struct APOptionalContent<Wrapped: View>: View {
     let some: Wrapped?
     @StateObject private var viewRoot = APVariadicView_MultiViewHost()
-    @EnvironmentObject var coordinator: APVariadicView.Coordinator
+    @EnvironmentObject var coordinator: APVariadicView.CoordinatorBase
     
     public var body: some View {
         APIDView(id: viewRoot.id) {EmptyView()}.equatable()

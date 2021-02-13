@@ -11,7 +11,7 @@ public struct APConditionalContent<TrueContent, FalseContent>: View where TrueCo
     let content: _ConditionalContent<TrueContent, FalseContent>
     let pathAttribute: APPath.Attribute
     @StateObject private var viewRoot = APVariadicView_MultiViewHost()
-    @EnvironmentObject var coordinator: APVariadicView.Coordinator
+    @EnvironmentObject var coordinator: APVariadicView.CoordinatorBase
     
     public var body: some View {
         APIDView(id: viewRoot.id) {EmptyView()}.equatable()
