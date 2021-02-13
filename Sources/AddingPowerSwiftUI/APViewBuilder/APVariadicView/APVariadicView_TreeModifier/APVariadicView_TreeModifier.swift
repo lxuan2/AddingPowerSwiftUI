@@ -8,49 +8,37 @@
 import SwiftUI
 
 public struct APVariadicView_TreeModifier<APVariadicView_Tree: View>: ViewModifier {
-    @StateObject private var coordinator: APVariadicView.Coordinator
+    @StateObject private var coordinator: APVariadicView.CoordinatorBase
     let tree: APVariadicView_Tree
-    let delegate: APVariadicView_Delegate
+    let updateDelegate: (APVariadicView.CoordinatorBase) -> ()
     
     public func body(content: Content) -> some View {
-        coordinator.delegate = delegate
+        updateDelegate(coordinator)
         return content
             .background(
                 tree
                     .onPreferenceChange(APVariadicView_PreferenceKey.self) {
                         coordinator.initRoot(with: $0)
                     }
-                    .environmentObject(coordinator as APVariadicView.CoordinatorBase)
+                    .environmentObject(coordinator)
             )
     }
     
     public init(tree: APVariadicView_Tree, delegate: APVariadicView_Delegate) {
         self.tree = tree
-        self.delegate = delegate
+        self.updateDelegate = {
+            let c = $0 as! APVariadicView.Coordinator
+            c.delegate = delegate
+        }
         self._coordinator = .init(wrappedValue: APVariadicView.Coordinator(delegate: delegate))
-    }
-}
-
-public struct APVariadicView_PrimitiveTreeModifier<APVariadicView_Tree: View>: ViewModifier {
-    @StateObject private var coordinator: APVariadicView.PrimitiveCoordinator
-    let tree: APVariadicView_Tree
-    let delegate: APVariadicView_PrimitiveDelegate
-    
-    public func body(content: Content) -> some View {
-        coordinator.delegate = delegate
-        return content
-            .background(
-                tree
-                    .onPreferenceChange(APVariadicView_PreferenceKey.self) {
-                        coordinator.initRoot(with: $0)
-                    }
-                    .environmentObject(coordinator as APVariadicView.CoordinatorBase)
-            )
     }
     
     public init(tree: APVariadicView_Tree, delegate: APVariadicView_PrimitiveDelegate) {
         self.tree = tree
-        self.delegate = delegate
+        self.updateDelegate = {
+            let c = $0 as! APVariadicView.PrimitiveCoordinator
+            c.delegate = delegate
+        }
         self._coordinator = .init(wrappedValue: APVariadicView.PrimitiveCoordinator(delegate: delegate))
     }
 }
@@ -61,6 +49,6 @@ extension View {
     }
     
     public func treeView<APVariadicView_Tree: View>(_ tree: APVariadicView_Tree, delegate: APVariadicView_PrimitiveDelegate) -> some View {
-        modifier(APVariadicView_PrimitiveTreeModifier(tree: tree, delegate: delegate))
+        modifier(APVariadicView_TreeModifier(tree: tree, delegate: delegate))
     }
 }

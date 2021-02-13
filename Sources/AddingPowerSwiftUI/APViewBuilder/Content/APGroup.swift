@@ -10,7 +10,7 @@ import SwiftUI
 public struct APGroup<Content: View>: APView {
     @usableFromInline
     var content: Content
-    @StateObject private var viewRoot = APVariadicView_MultiViewHost()
+    @StateObject private var viewRoot = APVariadicView_Root()
     @EnvironmentObject private var coordinator: APVariadicView.CoordinatorBase
     
     public var body: some View {
@@ -18,7 +18,7 @@ public struct APGroup<Content: View>: APView {
             .overlay(
                 content
                     .onPreferenceChange(APVariadicView_PreferenceKey.self) {
-                        coordinator.updates(viewRoot: $0, in: viewRoot, atrribute: .any)
+                        coordinator.replace(viewRoot: $0, in: viewRoot, atrribute: .any)
                     }
             )
             .preference(key: APVariadicView_PreferenceKey.self, value: [.multi(viewRoot)])

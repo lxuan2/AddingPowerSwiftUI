@@ -34,7 +34,7 @@ extension APStackNavigationView {
     private struct Delegate: APVariadicView_PrimitiveDelegate {
         unowned var nvc: APNavigationController
         
-        func subRoot(subRoot: APVariadicView_MultiViewHost, didUpdate newViewRoot: [APVariadicView], in root: APVariadicView_MultiViewHost) {
+        func subRoot(subRoot: APVariadicView_Root, didUpdate newViewRoot: [APVariadicView], in root: APVariadicView_Root) {
             if let loc = nvc.rootLocation {
                 if loc.contains(subRoot.location!) {
                     nvc.viewControllers[0] = UIViewController()
@@ -45,7 +45,7 @@ extension APStackNavigationView {
             }
         }
         
-        func initial(_ root: APVariadicView_MultiViewHost) {
+        func initial(_ root: APVariadicView_Root) {
             if let (location, view) = root.getLocationAndView(at: 0) {
                 nvc.viewControllers[0] = APNavigationPageController(rootView: view.edgesIgnoringSafeArea(.all))
                 nvc.rootLocation = location

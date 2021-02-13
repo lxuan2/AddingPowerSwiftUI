@@ -20,13 +20,13 @@ public extension APVariadicView_Delegate {
 }
 
 public protocol APVariadicView_PrimitiveDelegate {
-    func subRoot(subRoot: APVariadicView_MultiViewHost, willUpdate newViewRoot: [APVariadicView], in root: APVariadicView_MultiViewHost)
-    func subRoot(subRoot: APVariadicView_MultiViewHost, didUpdate newViewRoot: [APVariadicView], in root: APVariadicView_MultiViewHost)
-    func initial(_ root: APVariadicView_MultiViewHost)
+    func subRoot(subRoot: APVariadicView_Root, willUpdate newViewRoot: [APVariadicView], in root: APVariadicView_Root)
+    func subRoot(subRoot: APVariadicView_Root, didUpdate newViewRoot: [APVariadicView], in root: APVariadicView_Root)
+    func initial(_ root: APVariadicView_Root)
 }
 
 public extension APVariadicView_PrimitiveDelegate {
-    func subRoot(subRoot: APVariadicView_MultiViewHost, willUpdate newViewRoot: [APVariadicView], in root: APVariadicView_MultiViewHost) {}
-    func subRoot(subRoot: APVariadicView_MultiViewHost, didUpdate newViewRoot: [APVariadicView], in root: APVariadicView_MultiViewHost) {}
-    func initial(_ root: APVariadicView_MultiViewHost) {}
+    func subRoot(subRoot: APVariadicView_Root, willUpdate newViewRoot: [APVariadicView], in root: APVariadicView_Root) {}
+    func subRoot(subRoot: APVariadicView_Root, didUpdate newViewRoot: [APVariadicView], in root: APVariadicView_Root) {}
+    func initial(_ root: APVariadicView_Root) {}
 }

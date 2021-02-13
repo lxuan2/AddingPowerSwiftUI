@@ -1,5 +1,5 @@
 //
-//  APVariadicView_MultiViewHost.swift
+//  APVariadicView_Root.swift
 //  
 //
 //  Created by Xuan Li on 2/11/21.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-public class APVariadicView_MultiViewHost: ObservableObject, Identifiable, Equatable {
+public class APVariadicView_Root: ObservableObject, Identifiable, Equatable {
     public var viewRoot: [APVariadicView] = []
     public var id: UUID = UUID()
     public var location: [APPath]?
@@ -15,7 +15,7 @@ public class APVariadicView_MultiViewHost: ObservableObject, Identifiable, Equat
     
     public init() {}
     
-    public static func == (lhs: APVariadicView_MultiViewHost, rhs: APVariadicView_MultiViewHost) -> Bool {
+    public static func == (lhs: APVariadicView_Root, rhs: APVariadicView_Root) -> Bool {
         lhs.id == rhs.id
     }
     
@@ -32,7 +32,7 @@ public class APVariadicView_MultiViewHost: ObservableObject, Identifiable, Equat
             }
             switch self.viewRoot[path.direction] {
             case .unary(_):
-                fatalError("APVariadicView_MultiViewHost.getIndex(): Invalid path")
+                fatalError("APVariadicView_Root.getIndex(): Invalid path")
             case .multi(let newPoint):
                 var newLoc = location
                 newLoc.remove(at: 0)
