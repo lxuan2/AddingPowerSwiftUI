@@ -12,50 +12,74 @@ extension APVariadicView {
         public var delegate: APVariadicView_PrimitiveDelegate
         public var cache: [UUID]? = []
         
-        public override func replace(viewRoot: [APVariadicView], in subRoot: APVariadicView_Root, atrribute: APPath.Attribute) {
+        public override func replace(newStorage: [APVariadicView], in subRoot: APVariadicView_MultiViewRoot, env: APPathEnvironment) {
             if let loc = subRoot.location {
-                initBranch(viewRoot, at: loc, atrribute: atrribute)
+                initBranch(newStorage, at: loc, env: env)
                 let isInited = cache == nil
                 if isInited {
-                    delegate.subRoot(subRoot: subRoot, willUpdate: viewRoot, in: root)
+                    delegate.subRoot(subRoot: subRoot, willUpdate: newStorage, in: viewRoot)
                 }
-                subRoot.viewRoot = viewRoot
-                subRoot.pathAttribute = atrribute
+                subRoot.storage = newStorage
+                subRoot.env = env
                 if isInited {
-                    delegate.subRoot(subRoot: subRoot, didUpdate: viewRoot, in: root)
+                    delegate.subRoot(subRoot: subRoot, didUpdate: newStorage, in: viewRoot)
                 }
                 if !isInited {
                     cache!.removeFirst(where: { $0 == subRoot.id })
                     if cache!.isEmpty {
-                        delegate.initial(root)
+                        delegate.initial(viewRoot)
                         cache = nil
                     }
                 }
             } else {
-                subRoot.viewRoot = viewRoot
-                subRoot.pathAttribute = atrribute
+                subRoot.storage = newStorage
+                subRoot.env = env
             }
         }
         
-        public override func initRoot(with viewRoot: [APVariadicView]) {
-            initBranch(viewRoot, at: [], atrribute: .any)
-            root.viewRoot = viewRoot
+        public override func update(changedStorage: [APVariadicView], in subRoot: APVariadicView_MultiViewRoot, with ids: [AnyHashable]) {
+            if let loc = subRoot.location {
+                initBranch(changedStorage, at: loc, env: subRoot.env)
+                let isInited = cache == nil
+                if isInited {
+                    delegate.subRoot(subRoot: subRoot, willUpdate: changedStorage, in: viewRoot)
+                }
+                subRoot.storage = changedStorage
+                subRoot.ids = ids
+                if isInited {
+                    delegate.subRoot(subRoot: subRoot, didUpdate: changedStorage, in: viewRoot)
+                }
+                if !isInited {
+                    cache!.removeFirst(where: { $0 == subRoot.id })
+                    if cache!.isEmpty {
+                        delegate.initial(viewRoot)
+                        cache = nil
+                    }
+                }
+            } else {
+                subRoot.storage = changedStorage
+                subRoot.ids = ids
+            }
         }
         
-        public func initBranch(_ views: [APVariadicView], at location: [APPath], atrribute: APPath.Attribute) {
+        public override func initRoot(with initStorage: [APVariadicView]) {
+            initBranch(initStorage, at: [], env: .none)
+            viewRoot.storage = initStorage
+        }
+        
+        public func initBranch(_ views: [APVariadicView], at location: [APPath], env: APPathEnvironment) {
             for (i, item) in views.enumerated() {
                 switch item {
                 case .unary(_):
                     break
                 case .multi(let multiroot):
                     if multiroot.location == nil {
-                        let loc = location + [APPath(direction: i, attribute: atrribute)]
                         if cache != nil {
                             cache!.append(multiroot.id)
                         }
-                        multiroot.location = loc
+                        multiroot.location = location.resolve(in: env, with: i)
                     }
-                    initBranch(multiroot.viewRoot, at: multiroot.location!, atrribute: multiroot.pathAttribute)
+                    initBranch(multiroot.storage, at: multiroot.location!, env: multiroot.env)
                 }
             }
         }

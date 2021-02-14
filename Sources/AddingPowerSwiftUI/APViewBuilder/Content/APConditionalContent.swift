@@ -9,8 +9,8 @@ import SwiftUI
 
 public struct APConditionalContent<TrueContent, FalseContent>: View where TrueContent : View, FalseContent : View {
     let content: _ConditionalContent<TrueContent, FalseContent>
-    let pathAttribute: APPath.Attribute
-    @StateObject private var viewRoot = APVariadicView_Root()
+    let env: APPathEnvironment
+    @StateObject private var viewRoot = APVariadicView_MultiViewRoot()
     @EnvironmentObject private var coordinator: APVariadicView.CoordinatorBase
     
     public var body: some View {
@@ -18,7 +18,7 @@ public struct APConditionalContent<TrueContent, FalseContent>: View where TrueCo
             .overlay(
                 content
                     .onPreferenceChange(APVariadicView_PreferenceKey.self) {
-                        coordinator.replace(viewRoot: $0, in: viewRoot, atrribute: pathAttribute)
+                        coordinator.replace(newStorage: $0, in: viewRoot, env: env)
                     }
             )
             .preference(key: APVariadicView_PreferenceKey.self, value: [.multi(viewRoot)])
@@ -27,13 +27,13 @@ public struct APConditionalContent<TrueContent, FalseContent>: View where TrueCo
     @usableFromInline
     init(first: TrueContent) {
         self.content = ViewBuilder.buildEither(first: first)
-        pathAttribute = .truePath
+        env = .conditional(true)
     }
     
     @usableFromInline
     init(second: FalseContent) {
         self.content = ViewBuilder.buildEither(second: second)
-        pathAttribute = .falsePath
+        env = .conditional(false)
     }
 }
 

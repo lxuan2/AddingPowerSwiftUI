@@ -9,7 +9,7 @@ import SwiftUI
 
 public struct APOptionalContent<Wrapped: View>: View {
     let some: Wrapped?
-    @StateObject private var viewRoot = APVariadicView_Root()
+    @StateObject private var viewRoot = APVariadicView_MultiViewRoot()
     @EnvironmentObject var coordinator: APVariadicView.CoordinatorBase
     
     public var body: some View {
@@ -17,7 +17,7 @@ public struct APOptionalContent<Wrapped: View>: View {
             .overlay(
                 some
                     .onPreferenceChange(APVariadicView_PreferenceKey.self) {
-                        coordinator.replace(viewRoot: $0, in: viewRoot, atrribute: some == nil ? .falsePath : .truePath)
+                        coordinator.replace(newStorage: $0, in: viewRoot, env: .conditional(some != nil))
                     }
             )
             .preference(key: APVariadicView_PreferenceKey.self, value: [.multi(viewRoot)])

@@ -27,7 +27,7 @@
 //    }
 //}
 //
-//func traverseTree(root: APVariadicView_Root) -> [APAnySynView] {
+//func traverseTree(root: APVariadicView_MultiViewRoot) -> [APAnySynView] {
 //    if root.proxy == nil {
 //        return root.body
 //    }

@@ -9,14 +9,19 @@ import SwiftUI
 
 extension APVariadicView {
     public class CoordinatorBase: ObservableObject {
-        public var root = APVariadicView_Root()
-        public func replace(viewRoot: [APVariadicView], in subRoot: APVariadicView_Root, atrribute: APPath.Attribute) {
-            subRoot.viewRoot = viewRoot
-            subRoot.pathAttribute = atrribute
+        public var viewRoot = APVariadicView_MultiViewRoot()
+        public func replace(newStorage: [APVariadicView], in subRoot: APVariadicView_MultiViewRoot, env: APPathEnvironment) {
+            subRoot.storage = newStorage
+            subRoot.env = env
         }
         
-        public func initRoot(with viewRoot: [APVariadicView]) {
-            root.viewRoot = viewRoot
+        public func update(changedStorage: [APVariadicView], in subRoot: APVariadicView_MultiViewRoot, with ids: [AnyHashable]) {
+            subRoot.storage = changedStorage
+            subRoot.ids = ids
+        }
+        
+        public func initRoot(with initStorage: [APVariadicView]) {
+            viewRoot.storage = initStorage
         }
         
         public init() {}
@@ -30,6 +35,7 @@ extension Array {
         }
     }
 }
+
 extension Array where Element: Equatable {
     func contains(_ subarray: [Element]) -> Bool {
         var found = 0

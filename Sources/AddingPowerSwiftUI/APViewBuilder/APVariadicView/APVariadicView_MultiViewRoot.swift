@@ -1,5 +1,5 @@
 //
-//  APVariadicView_Root.swift
+//  APVariadicView_MultiViewRoot.swift
 //  
 //
 //  Created by Xuan Li on 2/11/21.
@@ -7,32 +7,51 @@
 
 import SwiftUI
 
-public class APVariadicView_Root: ObservableObject, Identifiable, Equatable {
-    public var viewRoot: [APVariadicView] = []
+public class APVariadicView_MultiViewRoot: ObservableObject, Identifiable, Equatable {
+    public var storage: [APVariadicView] = []
     public var id: UUID = UUID()
     public var location: [APPath]?
-    public var pathAttribute: APPath.Attribute = .any
+    public var env: APPathEnvironment
+    public var ids: [AnyHashable] = []
     
-    public init() {}
+    public init(env: APPathEnvironment = .none) {
+        self.env = env
+    }
     
-    public static func == (lhs: APVariadicView_Root, rhs: APVariadicView_Root) -> Bool {
+    public static func == (lhs: APVariadicView_MultiViewRoot, rhs: APVariadicView_MultiViewRoot) -> Bool {
         lhs.id == rhs.id
     }
     
     public func getIndex(in location: [APPath]) -> Int {
         if let path = location.first {
             var amount = 0
-            for i in 0..<path.direction {
-                switch self.viewRoot[i] {
+            var index = 0
+            
+            switch path {
+            case .any(let idx), .truePath(let idx), .falsePath(let idx), .groupPath(let idx):
+                index = idx
+            case .idPath(let _id):
+                if let idx = ids.firstIndex(of: _id) {
+                    index = idx
+                } else {
+                    fatalError("APVariadicView_MultiViewRoot: does not have \(_id) in ids")
+                }
+            }
+            
+            for i in 0..<index {
+                switch self.storage[i] {
                 case .unary(_):
                     amount += 1
                 case .multi(let newPoint):
                     amount += newPoint.getAmount()
                 }
             }
-            switch self.viewRoot[path.direction] {
+            
+            switch self.storage[index] {
             case .unary(_):
-                fatalError("APVariadicView_Root.getIndex(): Invalid path")
+                if location.count > 1 {
+                    fatalError("APVariadicView_Root.getIndex(): Invalid path")
+                }
             case .multi(let newPoint):
                 var newLoc = location
                 newLoc.remove(at: 0)
@@ -45,7 +64,7 @@ public class APVariadicView_Root: ObservableObject, Identifiable, Equatable {
     
     public func getAmount() -> Int {
         var amount = 0
-        for i in self.viewRoot {
+        for i in self.storage {
             switch i {
             case .unary(_):
                 amount += 1
@@ -57,15 +76,15 @@ public class APVariadicView_Root: ObservableObject, Identifiable, Equatable {
     }
     
     private func _getLocationAndView(at index: Int, idx: inout Int, current path: [APPath]) -> ([APPath], APAnySynView)? {
-        for (i, item) in viewRoot.enumerated() {
+        for (i, item) in storage.enumerated() {
             switch item {
             case .unary(let view):
                 idx += 1
                 if idx == index {
-                    return (path + [APPath(direction: i, attribute: .any)], view)
+                    return (path.resolve(in: env, with: i, with: self), view)
                 }
             case .multi(let point):
-                if let r = point._getLocationAndView(at: index, idx: &idx, current: path + [APPath(direction: i, attribute: .any)]) {
+                if let r = point._getLocationAndView(at: index, idx: &idx, current: path.resolve(in: env, with: i, with: self)) {
                     return r
                 }
             }
@@ -80,15 +99,4 @@ public class APVariadicView_Root: ObservableObject, Identifiable, Equatable {
         var initalIndex = -1
         return _getLocationAndView(at: index, idx: &initalIndex, current: [])
     }
-}
-
-public struct APPath: Equatable {
-    public enum Attribute {
-        case any
-        case truePath
-        case falsePath
-    }
-    
-    var direction: Int
-    var attribute: Attribute
 }

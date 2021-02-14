@@ -8,8 +8,8 @@
 import SwiftUI
 
 public enum APVariadicView: Equatable {
-    public typealias UnaryViewRoot = APAnySynView
-    public typealias MultiViewRoot = APVariadicView_Root
-    case unary(UnaryViewRoot)
-    case multi(MultiViewRoot)
+    case unary(APVariadicView_UnaryViewRoot)
+    case multi(APVariadicView_MultiViewRoot)
 }
+
+public typealias APVariadicView_UnaryViewRoot = APAnySynView

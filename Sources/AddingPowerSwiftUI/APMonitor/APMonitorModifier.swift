@@ -17,7 +17,7 @@ import SwiftUI
 //        storage.updateView(Color.green)
 //        return content
 //            .modifier(view)
-//            .preference(key: __APVariadicView_PreferenceKey.self, value: APVariadicView_Root(proxy: nil, body: [APAnySynView(storage: storage)]))
+//            .preference(key: __APVariadicView_PreferenceKey.self, value: APVariadicView_MultiViewRoot(proxy: nil, body: [APAnySynView(storage: storage)]))
 //            .onPreferenceChange(__APVariadicView_PreferenceKey.self) { root in
 ////                delegate.updateViews(from: object.previous, to: current)
 ////                object.previous = current
