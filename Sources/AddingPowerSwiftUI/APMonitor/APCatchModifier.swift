@@ -11,7 +11,7 @@
 //    let delegate: Delegate
 //    @StateObject var object = APMonitorObject()
 //
-//    public func body(content: Content) -> some View {
+//    public func makeBody(content: Content) -> some View {
 //        content
 //            .onPreferenceChange(__APVariadicView_PreferenceKey.self) { root in
 //                let current = traverseTree(root: root)

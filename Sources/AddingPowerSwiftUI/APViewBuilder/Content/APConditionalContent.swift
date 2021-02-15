@@ -11,14 +11,14 @@ public struct APConditionalContent<TrueContent, FalseContent>: View where TrueCo
     let content: _ConditionalContent<TrueContent, FalseContent>
     let env: APPathEnvironment
     @StateObject private var viewRoot = APVariadicView_MultiViewRoot()
-    @EnvironmentObject private var coordinator: APVariadicView.CoordinatorBase
+    @EnvironmentObject var coordinator: APVariadicView_RootCoordinatorHolder
     
     public var body: some View {
         APIDView(id: viewRoot.id) {EmptyView()}.equatable()
             .overlay(
                 content
                     .onPreferenceChange(APVariadicView_PreferenceKey.self) {
-                        coordinator.replace(newStorage: $0, in: viewRoot, env: env)
+                        coordinator.body.onReplace(in: viewRoot, with: $0, env: env)
                     }
             )
             .preference(key: APVariadicView_PreferenceKey.self, value: [.multi(viewRoot)])

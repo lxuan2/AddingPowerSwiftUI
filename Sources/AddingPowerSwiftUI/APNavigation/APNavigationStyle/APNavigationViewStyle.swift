@@ -9,7 +9,7 @@ import SwiftUI
 
 public protocol APNavigationViewStyle {
     associatedtype APBody : View
-    func body(configuration: APNavigationViewStyleConfiguration) -> Self.APBody
+    func makeBody(configuration: APNavigationViewStyleConfiguration) -> Self.APBody
 }
 
 public struct APNavigationViewStyleConfiguration {

@@ -9,7 +9,7 @@ import SwiftUI
 
 public struct APNavigationViewStyleModifier: EnvironmentalModifier {
     public func resolve(in environment: EnvironmentValues) -> some ViewModifier {
-        environment.apNavigationStyleModifer
+        environment.apNavigationStyleModifier
     }
 }
 
@@ -22,7 +22,7 @@ public struct _APNavigationViewStyleModifier: ViewModifier {
     
     public init<S: APNavigationViewStyle>(_ style: S) {
         self.makeBody = {
-            APAnyRepresentable(style.body(configuration: $0))
+            APAnyRepresentable(style.makeBody(configuration: $0))
         }
     }
 }

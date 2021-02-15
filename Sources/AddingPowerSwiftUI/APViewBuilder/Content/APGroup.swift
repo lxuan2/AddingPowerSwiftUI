@@ -10,15 +10,15 @@ import SwiftUI
 public struct APGroup<Content: View>: APView {
     @usableFromInline
     var content: Content
-    @StateObject private var viewRoot = APVariadicView_MultiViewRoot()
-    @EnvironmentObject private var coordinator: APVariadicView.CoordinatorBase
+    @StateObject private var viewRoot = APVariadicView_MultiViewRoot(env: .group)
+    @EnvironmentObject var coordinator: APVariadicView_RootCoordinatorHolder
     
     public var body: some View {
         APIDView(id: viewRoot.id) {EmptyView()}.equatable()
             .overlay(
                 content
                     .onPreferenceChange(APVariadicView_PreferenceKey.self) {
-                        coordinator.replace(newStorage: $0, in: viewRoot, env: .group)
+                        coordinator.body.onChange(in: viewRoot, with: $0)
                     }
             )
             .preference(key: APVariadicView_PreferenceKey.self, value: [.multi(viewRoot)])

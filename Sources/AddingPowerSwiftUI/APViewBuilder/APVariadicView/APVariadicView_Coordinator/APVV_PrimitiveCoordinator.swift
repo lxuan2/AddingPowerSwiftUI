@@ -9,7 +9,7 @@ import SwiftUI
 
 extension APVariadicView {
     public class PrimitiveCoordinator: CoordinatorBase {
-        public var delegate: APVariadicView_PrimitiveDelegate
+        public var delegate: APVariadicView_PrimitiveDelegate?
         public var cache: [UUID]? = []
         
         public override func replace(newStorage: [APVariadicView], in subRoot: APVariadicView_MultiViewRoot, env: APPathEnvironment) {
@@ -17,17 +17,17 @@ extension APVariadicView {
                 initBranch(newStorage, at: loc, env: env)
                 let isInited = cache == nil
                 if isInited {
-                    delegate.subRoot(subRoot: subRoot, willUpdate: newStorage, in: viewRoot)
+                    delegate?.subRoot(subRoot: subRoot, willUpdate: newStorage, in: viewRoot)
                 }
                 subRoot.storage = newStorage
                 subRoot.env = env
                 if isInited {
-                    delegate.subRoot(subRoot: subRoot, didUpdate: newStorage, in: viewRoot)
+                    delegate?.subRoot(subRoot: subRoot, didUpdate: newStorage, in: viewRoot)
                 }
                 if !isInited {
                     cache!.removeFirst(where: { $0 == subRoot.id })
                     if cache!.isEmpty {
-                        delegate.initial(viewRoot)
+                        delegate?.initial(viewRoot)
                         cache = nil
                     }
                 }
@@ -42,17 +42,17 @@ extension APVariadicView {
                 initBranch(changedStorage, at: loc, env: subRoot.env)
                 let isInited = cache == nil
                 if isInited {
-                    delegate.subRoot(subRoot: subRoot, willUpdate: changedStorage, in: viewRoot)
+                    delegate?.subRoot(subRoot: subRoot, willUpdate: changedStorage, in: viewRoot)
                 }
                 subRoot.storage = changedStorage
                 subRoot.ids = ids
                 if isInited {
-                    delegate.subRoot(subRoot: subRoot, didUpdate: changedStorage, in: viewRoot)
+                    delegate?.subRoot(subRoot: subRoot, didUpdate: changedStorage, in: viewRoot)
                 }
                 if !isInited {
                     cache!.removeFirst(where: { $0 == subRoot.id })
                     if cache!.isEmpty {
-                        delegate.initial(viewRoot)
+                        delegate?.initial(viewRoot)
                         cache = nil
                     }
                 }
@@ -84,7 +84,7 @@ extension APVariadicView {
             }
         }
         
-        public init(delegate: APVariadicView_PrimitiveDelegate) {
+        public init(delegate: APVariadicView_PrimitiveDelegate?) {
             self.delegate = delegate
         }
     }

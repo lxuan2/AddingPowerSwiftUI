@@ -10,8 +10,8 @@ import SwiftUI
 public struct APForEach<Data, ID, Content> where Data : RandomAccessCollection, ID : Hashable, Content : View {
     private var _body: ForEach<Data, ID, Content>
     private var id: (Data.Element) -> ID
-    @StateObject private var viewRoot = APVariadicView_MultiViewRoot()
-    @EnvironmentObject private var coordinator: APVariadicView.CoordinatorBase
+    @StateObject private var viewRoot = APVariadicView_MultiViewRoot(env: .identifiable)
+    @EnvironmentObject var coordinator: APVariadicView_RootCoordinatorHolder
 }
 
 extension APForEach : APView {
@@ -20,7 +20,7 @@ extension APForEach : APView {
             .overlay(
                 _body
                     .onPreferenceChange(APVariadicView_PreferenceKey.self) {
-                        coordinator.update(changedStorage: $0, in: viewRoot, with: _body.data.map(id))
+                        coordinator.body.onModification(in: viewRoot, with: $0, with: _body.data.map(id))
                     }
             )
             .preference(key: APVariadicView_PreferenceKey.self, value: [.multi(viewRoot)])

@@ -8,7 +8,7 @@
 import SwiftUI
 
 public struct APStackNavigationViewStyle: APNavigationViewStyle {
-    public func body(configuration: APNavigationViewStyleConfiguration) -> some View {
+    public func makeBody(configuration: APNavigationViewStyleConfiguration) -> some View {
         APStackNavigationView(content: configuration.content)
     }
     

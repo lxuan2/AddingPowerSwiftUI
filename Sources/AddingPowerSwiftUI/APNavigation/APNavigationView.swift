@@ -9,7 +9,7 @@ import SwiftUI
 
 public struct APNavigationView<Content: View>: View {
     let content: Content
-    @Environment(\.apNavigationStyleModifer) var style
+    @Environment(\.apNavigationStyleModifier) var style
     
     public var body: some View {
         content

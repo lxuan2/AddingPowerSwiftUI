@@ -9,6 +9,9 @@ import SwiftUI
 
 extension APVariadicView {
     public class CoordinatorBase: ObservableObject {
+        var _onInit: (([APVariadicView]) -> Void)?
+        var _onReplace: ((APVariadicView_MultiViewRoot, [APVariadicView], APPathEnvironment) -> Void)?
+        var _onModification: ((APVariadicView_MultiViewRoot, [APVariadicView], APPathEnvironment) -> Void)?
         public var viewRoot = APVariadicView_MultiViewRoot()
         public func replace(newStorage: [APVariadicView], in subRoot: APVariadicView_MultiViewRoot, env: APPathEnvironment) {
             subRoot.storage = newStorage

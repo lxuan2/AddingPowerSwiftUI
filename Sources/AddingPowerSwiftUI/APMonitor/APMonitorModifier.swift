@@ -13,7 +13,7 @@ import SwiftUI
 //    @StateObject var object = APMonitorObject()
 //    @StateObject private var storage = APAnySynViewStorage<Color>()
 //    
-//    func body(content: Content) -> some View {
+//    func makeBody(content: Content) -> some View {
 //        storage.updateView(Color.green)
 //        return content
 //            .modifier(view)
