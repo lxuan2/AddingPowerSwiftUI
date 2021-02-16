@@ -14,7 +14,8 @@ public class APVariadicView_MultiViewRoot: ObservableObject, Identifiable, Equat
     public var env: APPathEnvironment
     public var ids: [AnyHashable] = []
     
-    public init(env: APPathEnvironment = .none) {
+    public init(location: [APPath]? = nil, env: APPathEnvironment = .none) {
+        self.location = location
         self.env = env
     }
     

@@ -11,7 +11,7 @@ public struct APForEach<Data, ID, Content> where Data : RandomAccessCollection, 
     private var _body: ForEach<Data, ID, Content>
     private var id: (Data.Element) -> ID
     @StateObject private var viewRoot = APVariadicView_MultiViewRoot(env: .identifiable)
-    @EnvironmentObject var coordinator: APVariadicView_RootCoordinatorHolder
+    @EnvironmentObject var coordinator: APVariadicView.CoordinatorBase
 }
 
 extension APForEach : APView {
@@ -20,7 +20,7 @@ extension APForEach : APView {
             .overlay(
                 _body
                     .onPreferenceChange(APVariadicView_PreferenceKey.self) {
-                        coordinator.body.onModification(in: viewRoot, with: $0, with: _body.data.map(id))
+                        coordinator.viewRootModification(viewRoot, $0, _body.data.map(id))
                     }
             )
             .preference(key: APVariadicView_PreferenceKey.self, value: [.multi(viewRoot)])

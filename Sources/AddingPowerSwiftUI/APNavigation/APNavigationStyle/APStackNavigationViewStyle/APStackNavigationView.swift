@@ -7,9 +7,15 @@
 
 import SwiftUI
 
-public struct APStackNavigationView<Content: View>: View {
-    @StateObject var nvc = APNavigationController(rootViewController: UIViewController())
-    let content: Content
+public struct APStackNavigationView: APVariadicView_PrimitiveRoot {
+    public func makeBody(configuration: APVariadicViewPrimitiveConfiguration) -> some View {
+        _APStackNavigationView(configuration: configuration)
+    }
+}
+
+public struct _APStackNavigationView: View {
+    @StateObject private var nvc = APNavigationController(rootViewController: UIViewController())
+    let configuration: APVariadicViewPrimitiveConfiguration
     
     public var body: some View {
         APNavigationHostingView(nvc: nvc)
@@ -18,42 +24,36 @@ public struct APStackNavigationView<Content: View>: View {
                 nvc.setNavigationBarHidden(hidden, animated: true)
             }
             .edgesIgnoringSafeArea(.all)
-            .treeView(content, delegate: Delegate(nvc: nvc))
+            .onReceive(configuration.rootInit) {
+                handleRootInit()
+            }
+            .onReceive(configuration.viewRootChange) {
+                handleRootReplace(viewRoot: $0.0, $0.1)
+            }
+            .onReceive(configuration.viewRootReplace) {
+                handleRootReplace(viewRoot: $0.0, $0.1)
+            }
+            .onReceive(configuration.viewRootModification) {
+                handleRootReplace(viewRoot: $0.0, $0.1)
+            }
     }
     
-    public init(content: Content) {
-        self.content = content
+    public func handleRootInit() {
+        if let (location, view) = configuration.root.getLocationAndView(at: 0) {
+            nvc.viewControllers[0] = APNavigationPageController(rootView: view.edgesIgnoringSafeArea(.all))
+            nvc.rootLocation = location
+        }
     }
     
-    public init(@APViewBuilder content: () -> Content){
-        self.content = content()
-    }
-}
-
-extension APStackNavigationView {
-    private struct Delegate: APVariadicView_PrimitiveDelegate {
-        unowned var nvc: APNavigationController
-        
-        func subRoot(subRoot: APVariadicView_MultiViewRoot, didUpdate newViewRoot: [APVariadicView], in root: APVariadicView_MultiViewRoot) {
-            if let loc = nvc.rootLocation {
-                if loc.contains(subRoot.location!) {
-                    nvc.viewControllers[0] = UIViewController()
-                    nvc.rootLocation = nil
-                }
-            } else {
-                initial(root)
+    public func handleRootReplace(viewRoot: APVariadicView_MultiViewRoot, _ newStorage: [APVariadicView]) {
+        viewRoot.storage = newStorage
+        if let loc = nvc.rootLocation {
+            if loc.contains(viewRoot.location!) {
+                nvc.viewControllers[0] = UIViewController()
+                nvc.rootLocation = nil
             }
-        }
-        
-        func initial(_ root: APVariadicView_MultiViewRoot) {
-            if let (location, view) = root.getLocationAndView(at: 0) {
-                nvc.viewControllers[0] = APNavigationPageController(rootView: view.edgesIgnoringSafeArea(.all))
-                nvc.rootLocation = location
-            }
-        }
-        
-        init(nvc: APNavigationController) {
-            self.nvc = nvc
+        } else {
+            handleRootInit()
         }
     }
 }

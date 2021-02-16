@@ -6,65 +6,93 @@
 //
 
 import SwiftUI
+import Combine
 
 extension APVariadicView {
-    public class PrimitiveCoordinator: CoordinatorBase {
-        public var delegate: APVariadicView_PrimitiveDelegate?
+    public class PrimitiveCoordinator: CoordinatorBase, APVariadicView_CoordinatorProtocol {
+        public override init() {}
+        
         public var cache: [UUID]? = []
+        public let root = APVariadicView_MultiViewRoot(location: [])
+        public let rootInit = PassthroughSubject<Void, Never>()
+        public let viewRootChange = PassthroughSubject<(APVariadicView_MultiViewRoot, [APVariadicView]), Never>()
+        public let viewRootReplace = PassthroughSubject<(APVariadicView_MultiViewRoot, [APVariadicView], APPathEnvironment), Never>()
+        public let viewRootModification = PassthroughSubject<(APVariadicView_MultiViewRoot, [APVariadicView], [AnyHashable]), Never>()
         
-        public override func replace(newStorage: [APVariadicView], in subRoot: APVariadicView_MultiViewRoot, env: APPathEnvironment) {
-            if let loc = subRoot.location {
+        public func toConfiguration() -> APVariadicViewPrimitiveConfiguration {
+            return APVariadicViewPrimitiveConfiguration(root: self.root,
+                                                        rootInit: self.rootInit.eraseToAnyPublisher(),
+                                                        viewRootChange: self.viewRootChange.eraseToAnyPublisher(),
+                                                        viewRootReplace: self.viewRootReplace.eraseToAnyPublisher(),
+                                                        viewRootModification: self.viewRootModification.eraseToAnyPublisher())
+        }
+        
+        public override func rootChange(_ newStorage: [APVariadicView]) {
+            if cache == nil {
+                viewRootChange.send((root, newStorage))
+                return
+            }
+            initBranch(newStorage, at: [], env: .none)
+            root.storage = newStorage
+            if cache!.isEmpty {
+                cache = nil
+                rootInit.send()
+            }
+        }
+        
+        public override func viewRootChange(_ viewRoot: APVariadicView_MultiViewRoot, _ changedStorage: [APVariadicView]) {
+            if let loc = viewRoot.location {
+                initBranch(changedStorage, at: loc, env: viewRoot.env)
+                if cache != nil {
+                    cache!.removeFirst(where: { $0 == viewRoot.id })
+                    if cache!.isEmpty {
+                        cache = nil
+                        rootInit.send()
+                    }
+                    return viewRoot.storage = changedStorage
+                }
+                return viewRootChange.send((viewRoot, changedStorage))
+            }
+            viewRoot.storage = changedStorage
+        }
+        
+        public override func viewRootReplace(_ viewRoot: APVariadicView_MultiViewRoot, _ newStorage: [APVariadicView], _ env: APPathEnvironment) {
+            if let loc = viewRoot.location {
                 initBranch(newStorage, at: loc, env: env)
-                let isInited = cache == nil
-                if isInited {
-                    delegate?.subRoot(subRoot: subRoot, willUpdate: newStorage, in: viewRoot)
-                }
-                subRoot.storage = newStorage
-                subRoot.env = env
-                if isInited {
-                    delegate?.subRoot(subRoot: subRoot, didUpdate: newStorage, in: viewRoot)
-                }
-                if !isInited {
-                    cache!.removeFirst(where: { $0 == subRoot.id })
+                if cache != nil {
+                    cache!.removeFirst(where: { $0 == viewRoot.id })
                     if cache!.isEmpty {
-                        delegate?.initial(viewRoot)
                         cache = nil
+                        rootInit.send()
                     }
+                    viewRoot.storage = newStorage
+                    viewRoot.env = env
+                    return
                 }
-            } else {
-                subRoot.storage = newStorage
-                subRoot.env = env
+                return viewRootReplace.send((viewRoot, newStorage, env))
             }
+            viewRoot.storage = newStorage
+            viewRoot.env = env
         }
         
-        public override func update(changedStorage: [APVariadicView], in subRoot: APVariadicView_MultiViewRoot, with ids: [AnyHashable]) {
-            if let loc = subRoot.location {
-                initBranch(changedStorage, at: loc, env: subRoot.env)
-                let isInited = cache == nil
-                if isInited {
-                    delegate?.subRoot(subRoot: subRoot, willUpdate: changedStorage, in: viewRoot)
-                }
-                subRoot.storage = changedStorage
-                subRoot.ids = ids
-                if isInited {
-                    delegate?.subRoot(subRoot: subRoot, didUpdate: changedStorage, in: viewRoot)
-                }
-                if !isInited {
-                    cache!.removeFirst(where: { $0 == subRoot.id })
+        public override func viewRootModification(_ viewRoot: APVariadicView_MultiViewRoot, _ modifiedStorage: [APVariadicView], _ ids: [AnyHashable]) {
+            if let loc = viewRoot.location {
+                // fix me
+                initBranch(modifiedStorage, at: loc, env: .none)
+                if cache != nil {
+                    cache!.removeFirst(where: { $0 == viewRoot.id })
                     if cache!.isEmpty {
-                        delegate?.initial(viewRoot)
                         cache = nil
+                        rootInit.send()
                     }
+                    viewRoot.storage = modifiedStorage
+                    viewRoot.ids = ids
+                    return
                 }
-            } else {
-                subRoot.storage = changedStorage
-                subRoot.ids = ids
+                return viewRootModification.send((viewRoot, modifiedStorage, ids))
             }
-        }
-        
-        public override func initRoot(with initStorage: [APVariadicView]) {
-            initBranch(initStorage, at: [], env: .none)
-            viewRoot.storage = initStorage
+            viewRoot.storage = modifiedStorage
+            viewRoot.ids = ids
         }
         
         public func initBranch(_ views: [APVariadicView], at location: [APPath], env: APPathEnvironment) {
@@ -72,20 +100,16 @@ extension APVariadicView {
                 switch item {
                 case .unary(_):
                     break
-                case .multi(let multiroot):
-                    if multiroot.location == nil {
+                case .multi(let multiRoot):
+                    if multiRoot.location == nil {
                         if cache != nil {
-                            cache!.append(multiroot.id)
+                            cache!.append(multiRoot.id)
                         }
-                        multiroot.location = location.resolve(in: env, with: i)
+                        multiRoot.location = location.resolve(in: env, with: i)
                     }
-                    initBranch(multiroot.storage, at: multiroot.location!, env: multiroot.env)
+                    initBranch(multiRoot.storage, at: multiRoot.location!, env: multiRoot.env)
                 }
             }
-        }
-        
-        public init(delegate: APVariadicView_PrimitiveDelegate?) {
-            self.delegate = delegate
         }
     }
 }

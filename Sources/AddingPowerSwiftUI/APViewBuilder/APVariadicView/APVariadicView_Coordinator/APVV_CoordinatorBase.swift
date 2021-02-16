@@ -1,5 +1,5 @@
 //
-//  APVV_CoordinatorBase.swift
+//  APVVCoordinatorBase.swift
 //  
 //
 //  Created by Xuan Li on 2/13/21.
@@ -9,26 +9,28 @@ import SwiftUI
 
 extension APVariadicView {
     public class CoordinatorBase: ObservableObject {
-        var _onInit: (([APVariadicView]) -> Void)?
-        var _onReplace: ((APVariadicView_MultiViewRoot, [APVariadicView], APPathEnvironment) -> Void)?
-        var _onModification: ((APVariadicView_MultiViewRoot, [APVariadicView], APPathEnvironment) -> Void)?
-        public var viewRoot = APVariadicView_MultiViewRoot()
-        public func replace(newStorage: [APVariadicView], in subRoot: APVariadicView_MultiViewRoot, env: APPathEnvironment) {
-            subRoot.storage = newStorage
-            subRoot.env = env
+        
+        public func rootChange(_ newStorage: [APVariadicView]) {
+            fatalError("CoordinatorBase: not implemented")
         }
         
-        public func update(changedStorage: [APVariadicView], in subRoot: APVariadicView_MultiViewRoot, with ids: [AnyHashable]) {
-            subRoot.storage = changedStorage
-            subRoot.ids = ids
+        public func viewRootChange(_ viewRoot: APVariadicView_MultiViewRoot, _ changedStorage: [APVariadicView]) {
+            fatalError("CoordinatorBase: not implemented")
         }
         
-        public func initRoot(with initStorage: [APVariadicView]) {
-            viewRoot.storage = initStorage
+        public func viewRootReplace(_ viewRoot: APVariadicView_MultiViewRoot, _ newStorage: [APVariadicView], _ env: APPathEnvironment) {
+            fatalError("CoordinatorBase: not implemented")
         }
         
-        public init() {}
+        public func viewRootModification(_ viewRoot: APVariadicView_MultiViewRoot, _ modifiedStorage: [APVariadicView], _ ids: [AnyHashable]) {
+            fatalError("CoordinatorBase: not implemented")
+        }
     }
+}
+
+public protocol APVariadicView_CoordinatorProtocol: APVariadicView.CoordinatorBase {
+    associatedtype Configuration
+    func toConfiguration() -> Configuration
 }
 
 extension Array {
