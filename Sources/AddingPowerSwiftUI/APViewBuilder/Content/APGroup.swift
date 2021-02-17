@@ -27,4 +27,8 @@ public struct APGroup<Content: View>: APView {
     @inlinable public init(@APViewBuilder content: () -> Content) {
         self.content = content()
     }
+    
+    @inlinable public init(content: Content) {
+        self.content = content
+    }
 }

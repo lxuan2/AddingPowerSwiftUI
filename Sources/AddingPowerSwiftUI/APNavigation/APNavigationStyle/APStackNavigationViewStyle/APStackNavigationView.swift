@@ -14,7 +14,7 @@ public struct APStackNavigationView: APVariadicView_PrimitiveRoot {
 }
 
 public struct _APStackNavigationView: View {
-    @StateObject private var nvc = APNavigationController(rootViewController: UIViewController())
+    @StateObject private var nvc = APNavigationController()
     let configuration: APVariadicViewPrimitiveConfiguration
     
     public var body: some View {
@@ -40,7 +40,7 @@ public struct _APStackNavigationView: View {
     
     public func handleRootInit() {
         if let (location, view) = configuration.root.getLocationAndView(at: 0) {
-            nvc.viewControllers[0] = APNavigationPageController(rootView: view.edgesIgnoringSafeArea(.all))
+            nvc.root = view
             nvc.rootLocation = location
         }
     }
@@ -49,7 +49,7 @@ public struct _APStackNavigationView: View {
         viewRoot.storage = newStorage
         if let loc = nvc.rootLocation {
             if loc.contains(viewRoot.location!) {
-                nvc.viewControllers[0] = UIViewController()
+                nvc.root = nil
                 nvc.rootLocation = nil
             }
         } else {

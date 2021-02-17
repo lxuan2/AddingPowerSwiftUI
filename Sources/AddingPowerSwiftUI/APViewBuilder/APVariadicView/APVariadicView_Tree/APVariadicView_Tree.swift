@@ -50,15 +50,3 @@ extension APVariadicView.Tree where Root: APVariadicView_PrimitiveRoot, Coordina
         self.init(root: root, content: content())
     }
 }
-
-extension APVariadicView.Tree where Root: APVariadicView_RawRoot, Coordinator == APVariadicView.RawCoordinator {
-    public init(root: Root, content: Content) {
-        self.root = root
-        self.content = content
-        self._coordinator = .init(wrappedValue: APVariadicView.RawCoordinator())
-    }
-    
-    public init(_ root: Root, @APViewBuilder content: () -> Content) {
-        self.init(root: root, content: content())
-    }
-}

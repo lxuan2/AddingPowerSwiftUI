@@ -24,6 +24,9 @@ public struct APNavigationTitleEndModifer: ViewModifier {
                         vc.controller = nil
                         navigationItem?.title = t.text
                     }
+                } else {
+                    navigationItem?.title = nil
+                    navigationItem?.titleView = nil
                 }
             }
     }
