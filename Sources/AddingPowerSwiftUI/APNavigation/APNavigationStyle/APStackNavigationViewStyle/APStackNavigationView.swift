@@ -45,8 +45,7 @@ public struct _APStackNavigationView: View {
         }
     }
     
-    public func handleRootReplace(viewRoot: APVariadicView_MultiViewRoot, _ newStorage: [APVariadicView]) {
-        viewRoot.storage = newStorage
+    public func handleRootReplace(viewRoot: APVariadicView_MultiViewRoot, _ oldStorage: [APVariadicView]) {
         if let loc = nvc.rootLocation {
             if loc.contains(viewRoot.location!) {
                 nvc.root = nil

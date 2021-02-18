@@ -8,18 +8,22 @@
 import SwiftUI
 
 public class APVariadicView_MultiViewRoot: ObservableObject, Identifiable, Equatable {
-    public var storage: [APVariadicView] = []
-    public var id: UUID = UUID()
+    public var storage: [APVariadicView]
+    public var id: UUID
     public var location: [APPath]?
     public var env: APPathEnvironment
-    public var ids: [AnyHashable] = []
+    public var ids: [AnyHashable]
+    public var viewlistCount: Int = 0
+    public weak var parentViewRoot: APVariadicView_MultiViewRoot? = nil
     
-    internal init(storage: [APVariadicView] = [], id: UUID = UUID(), location: [APPath]? = nil, env: APPathEnvironment = .none, ids: [AnyHashable] = []) {
+    internal init(storage: [APVariadicView] = [], id: UUID = UUID(), location: [APPath]? = nil, env: APPathEnvironment = .none, ids: [AnyHashable] = [], viewlistCount: Int = 0, parentViewRoot: APVariadicView_MultiViewRoot? = nil) {
         self.storage = storage
         self.id = id
         self.location = location
         self.env = env
         self.ids = ids
+        self.viewlistCount = viewlistCount
+        self.parentViewRoot = parentViewRoot
     }
 
     
@@ -61,7 +65,7 @@ public class APVariadicView_MultiViewRoot: ObservableObject, Identifiable, Equat
                 case .unary(_):
                     amount += 1
                 case .multi(let newPoint):
-                    amount += newPoint.getAmount()
+                    amount += newPoint.viewlistCount
                 }
             }
             
