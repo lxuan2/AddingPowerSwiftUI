@@ -19,12 +19,12 @@ public struct TransformTransferViewModifier<K: APAnySynUIViewPreferenceKey, V: V
     
     public func body(content: Content) -> some View {
         storage.updateView(value)
-        return APIDView(id: storage.id) { 
+        return APEquatableView(id: storage.id) { 
             content
                 .transformPreference(key) { v in
                     K.transform(&v, APAnySynView(storage: storage))
                 }
-        }.equatable()
+        }
     }
 }
 

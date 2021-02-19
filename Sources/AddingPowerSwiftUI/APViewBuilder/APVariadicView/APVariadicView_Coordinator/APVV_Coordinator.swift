@@ -16,56 +16,38 @@ extension APVariadicView {
         public var viewList: [APAnySynView] = []
         public let root = APVariadicView_MultiViewRoot()
         public let onInit = PassthroughSubject<[APAnySynView], Never>()
-        public let onChange = PassthroughSubject<([APAnySynView], Range<Int>, [APAnySynView]), Never>()
         public let onReplace = PassthroughSubject<([APAnySynView], Range<Int>, [APAnySynView]), Never>()
         public let onModification = PassthroughSubject<([APAnySynView], Range<Int>, [APAnySynView]), Never>()
         
         public func toConfiguration() -> APVariadicViewConfiguration {
             APVariadicViewConfiguration(
                 onInit: self.onInit.eraseToAnyPublisher(),
-                onChange: self.onChange.eraseToAnyPublisher(),
                 onReplace: self.onReplace.eraseToAnyPublisher(),
                 onModification: self.onModification.eraseToAnyPublisher())
         }
         
         public override func rootChange(_ newStorage: [APVariadicView]) {
             if cache == nil {
-                viewRootChange(root, newStorage)
+                viewRootReplace(root, newStorage, root.env)
                 return
             }
-            viewList = initBranch(newStorage, at: [], env: .none)
             root.storage = newStorage
+            root.location = []
+            viewList = initBranch(root)
             if cache!.isEmpty {
                 cache = nil
                 onInit.send(viewList)
             }
         }
         
-        public override func viewRootChange(_ viewRoot: APVariadicView_MultiViewRoot, _ changedStorage: [APVariadicView]) {
-            if let loc = viewRoot.location {
-                let views = initBranch(changedStorage, at: loc, env: viewRoot.env)
-                let startIndex = root.getIndex(in: loc)
-                let range = startIndex..<startIndex + viewRoot.getAmount()
-                let vl = viewList
-                viewList.replaceSubrange(range, with: views)
-                if cache != nil {
-                    cache!.removeFirst(where: { $0 == viewRoot.id })
-                    if cache!.isEmpty {
-                        cache = nil
-                        onInit.send(viewList)
-                    }
-                } else {
-                    onChange.send((vl, range, views))
-                }
-            }
-            viewRoot.storage = changedStorage
-        }
-        
         public override func viewRootReplace(_ viewRoot: APVariadicView_MultiViewRoot, _ newStorage: [APVariadicView], _ env: APPathEnvironment) {
+            let oldStorage = viewRoot.storage
+            viewRoot.storage = newStorage
+            viewRoot.env = env
             if let loc = viewRoot.location {
-                let views = initBranch(newStorage, at: loc, env: env)
+                let views = initBranch(viewRoot)
                 let startIndex = root.getIndex(in: loc)
-                let range = startIndex..<startIndex + viewRoot.getAmount()
+                let range = startIndex..<startIndex + oldStorage.getAmount()
                 let vl = viewList
                 viewList.replaceSubrange(range, with: views)
                 if cache != nil {
@@ -78,16 +60,16 @@ extension APVariadicView {
                     onReplace.send((vl, range, views))
                 }
             }
-            viewRoot.storage = newStorage
-            viewRoot.env = env
         }
         
         public override func viewRootModification(_ viewRoot: APVariadicView_MultiViewRoot, _ modifiedStorage: [APVariadicView], _ ids: [AnyHashable]) {
+            let oldStorage = viewRoot.storage
+            viewRoot.storage = modifiedStorage
+            viewRoot.ids = ids
             if let loc = viewRoot.location {
-                // fix me
-                let views = initBranch(modifiedStorage, at: loc, env: .identifiable, ids: ids)
+                let views = initBranch(viewRoot)
                 let startIndex = root.getIndex(in: loc)
-                let range = startIndex..<startIndex + viewRoot.getAmount()
+                let range = startIndex..<startIndex + oldStorage.getAmount()
                 let vl = viewList
                 viewList.replaceSubrange(range, with: views)
                 if cache != nil {
@@ -100,13 +82,6 @@ extension APVariadicView {
                     onModification.send((vl, range, views))
                 }
             }
-            viewRoot.storage = modifiedStorage
-            viewRoot.ids = ids
-        }
-        
-        public func initBranch(_ views: [APVariadicView], at location: [APPath], env: APPathEnvironment, ids: [AnyHashable] = []) -> [APAnySynView] {
-            let vr = APVariadicView_MultiViewRoot(storage: views, id: UUID(), location: location, env: env, ids: ids)
-            return initBranch(vr)
         }
         
         public func initBranch(_ viewRoot: APVariadicView_MultiViewRoot) -> [APAnySynView] {
@@ -122,7 +97,7 @@ extension APVariadicView {
                         }
                         multiRoot.location = viewRoot.getPathForChild(at: i)
                     }
-                    newViews.append(contentsOf: initBranch(multiRoot.storage, at: multiRoot.location!, env: multiRoot.env))
+                    newViews.append(contentsOf: initBranch(multiRoot))
                 }
             }
             return newViews

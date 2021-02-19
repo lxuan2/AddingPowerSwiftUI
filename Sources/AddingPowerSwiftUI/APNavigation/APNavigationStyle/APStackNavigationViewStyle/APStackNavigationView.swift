@@ -27,14 +27,11 @@ public struct _APStackNavigationView: View {
             .onReceive(configuration.rootInit) {
                 handleRootInit()
             }
-            .onReceive(configuration.viewRootChange) {
-                handleRootReplace(viewRoot: $0.0, $0.1)
-            }
             .onReceive(configuration.viewRootReplace) {
-                handleRootReplace(viewRoot: $0.0, $0.1)
+                handleChange(viewRoot: $0.0, $0.1)
             }
             .onReceive(configuration.viewRootModification) {
-                handleRootReplace(viewRoot: $0.0, $0.1)
+                handleChange(viewRoot: $0.0, $0.1)
             }
     }
     
@@ -45,11 +42,14 @@ public struct _APStackNavigationView: View {
         }
     }
     
-    public func handleRootReplace(viewRoot: APVariadicView_MultiViewRoot, _ oldStorage: [APVariadicView]) {
+    public func handleChange(viewRoot: APVariadicView_MultiViewRoot, _ oldStorage: [APVariadicView]) {
         if let loc = nvc.rootLocation {
             if loc.contains(viewRoot.location!) {
-                nvc.root = nil
-                nvc.rootLocation = nil
+                if let v = loc.findView(in: configuration.root) {
+                    nvc.root = v
+                } else {
+                    nvc.root = nil
+                }
             }
         } else {
             handleRootInit()

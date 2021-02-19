@@ -8,9 +8,9 @@
 import SwiftUI
 
 public protocol APStyle where Self == Configuration.Style  {
-    associatedtype _Body: View
+    associatedtype Body: View
     associatedtype Configuration: APStyleConfiguration
-    func _body(configuration: Self.Configuration) -> Self._Body
+    func makeBody(configuration: Self.Configuration) -> Self.Body
 }
 
 public protocol APStyleConfiguration {

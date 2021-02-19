@@ -16,7 +16,9 @@ public class APNavigationController: UINavigationController, ObservableObject {
             _root.wrappedRootView.content
         }
         set {
-            _root.wrappedRootView = ModifiedContent(content: newValue, modifier: _SafeAreaIgnoringLayout())
+            if _root.wrappedRootView.content != newValue {
+                _root.wrappedRootView = ModifiedContent(content: newValue, modifier: _SafeAreaIgnoringLayout())
+            }
         }
     }
     public unowned var _root: APNavigationPageController<ModifiedContent<APAnySynView?, _SafeAreaIgnoringLayout>>

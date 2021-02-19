@@ -16,7 +16,7 @@ public struct APForEach<Data, ID, Content> where Data : RandomAccessCollection, 
 
 extension APForEach : APView {
     public var body: some View {
-        APIDView(id: viewRoot.id) {EmptyView()}.equatable()
+        APEquatableView(id: viewRoot.id) {EmptyView()}
             .overlay(
                 _body
                     .onPreferenceChange(APVariadicView_PreferenceKey.self) {

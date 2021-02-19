@@ -14,7 +14,7 @@ public struct APConditionalContent<TrueContent, FalseContent>: View where TrueCo
     @EnvironmentObject var coordinator: APVariadicView.CoordinatorBase
     
     public var body: some View {
-        APIDView(id: viewRoot.id) {EmptyView()}.equatable()
+        APEquatableView(id: viewRoot.id) {EmptyView()}
             .overlay(
                 content
                     .onPreferenceChange(APVariadicView_PreferenceKey.self) {

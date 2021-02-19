@@ -13,7 +13,7 @@ public struct APOptionalContent<Wrapped: View>: View {
     @EnvironmentObject var coordinator: APVariadicView.CoordinatorBase
     
     public var body: some View {
-        APIDView(id: viewRoot.id) {EmptyView()}.equatable()
+        APEquatableView(id: viewRoot.id) {EmptyView()}
             .overlay(
                 some
                     .onPreferenceChange(APVariadicView_PreferenceKey.self) {

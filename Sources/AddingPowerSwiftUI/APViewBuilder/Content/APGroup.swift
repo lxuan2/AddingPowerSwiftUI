@@ -14,11 +14,11 @@ public struct APGroup<Content: View>: APView {
     @EnvironmentObject var coordinator: APVariadicView.CoordinatorBase
     
     public var body: some View {
-        APIDView(id: viewRoot.id) {EmptyView()}.equatable()
+        APEquatableView(id: viewRoot.id) {EmptyView()}
             .overlay(
                 content
                     .onPreferenceChange(APVariadicView_PreferenceKey.self) {
-                        coordinator.viewRootChange(viewRoot, $0)
+                        coordinator.viewRootReplace(viewRoot, $0, .group)
                     }
             )
             .preference(key: APVariadicView_PreferenceKey.self, value: [.multi(viewRoot)])

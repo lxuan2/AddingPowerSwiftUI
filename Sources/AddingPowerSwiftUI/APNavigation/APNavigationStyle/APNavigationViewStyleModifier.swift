@@ -10,7 +10,7 @@ import SwiftUI
 public struct APAnyAPNavigationViewStyle: APStyle {
     let content: (APNavigationViewStyleConfiguration) -> APAnyRepresentable
     
-    public func _body(configuration: APNavigationViewStyleConfiguration) -> some View {
+    public func makeBody(configuration: APNavigationViewStyleConfiguration) -> some View {
         content(configuration)
     }
     
@@ -34,6 +34,6 @@ extension EnvironmentValues {
 
 extension View {
     public func apNavigationViewStyle<S: APNavigationViewStyle>(_ style: S) -> some View {
-        environment(\.apNavigationStyle, APAnyAPNavigationViewStyle(style))
+        self.style(\.apNavigationStyle, APAnyAPNavigationViewStyle(style))
     }
 }

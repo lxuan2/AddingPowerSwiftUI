@@ -13,24 +13,21 @@ public class APVariadicView_MultiViewRoot: ObservableObject, Identifiable, Equat
     public var location: [APPath]?
     public var env: APPathEnvironment
     public var ids: [AnyHashable]
-    public var viewlistCount: Int = 0
-    public weak var parentViewRoot: APVariadicView_MultiViewRoot? = nil
     
-    internal init(storage: [APVariadicView] = [], id: UUID = UUID(), location: [APPath]? = nil, env: APPathEnvironment = .none, ids: [AnyHashable] = [], viewlistCount: Int = 0, parentViewRoot: APVariadicView_MultiViewRoot? = nil) {
+    internal init(storage: [APVariadicView] = [], id: UUID = UUID(), location: [APPath]? = nil, env: APPathEnvironment = .none, ids: [AnyHashable] = []) {
         self.storage = storage
         self.id = id
         self.location = location
         self.env = env
         self.ids = ids
-        self.viewlistCount = viewlistCount
-        self.parentViewRoot = parentViewRoot
     }
 
     
     public static func == (lhs: APVariadicView_MultiViewRoot, rhs: APVariadicView_MultiViewRoot) -> Bool {
         lhs.id == rhs.id
     }
-    
+}
+extension APVariadicView_MultiViewRoot {
     public func getPathForChild(at index: Int) -> [APPath] {
         switch env {
         case .none:
@@ -65,7 +62,7 @@ public class APVariadicView_MultiViewRoot: ObservableObject, Identifiable, Equat
                 case .unary(_):
                     amount += 1
                 case .multi(let newPoint):
-                    amount += newPoint.viewlistCount
+                    amount += newPoint.getAmount()
                 }
             }
             
@@ -120,5 +117,45 @@ public class APVariadicView_MultiViewRoot: ObservableObject, Identifiable, Equat
         }
         var initalIndex = -1
         return _getLocationAndView(at: index, idx: &initalIndex, current: [])
+    }
+    
+    public func getViewRoot(path: APPath) -> APVariadicView? {
+        var index = 0
+        switch path {
+        case .any(let idx):
+            if env != .none {
+                return nil
+            }
+            index = idx
+        case .truePath(let idx):
+            if env != .conditional(true) {
+                return nil
+            }
+            index = idx
+        case .falsePath(let idx):
+            if env != .conditional(false) {
+                return nil
+            }
+            index = idx
+        case .groupPath(let idx):
+            if env != .group {
+                return nil
+            }
+            index = idx
+        case .idPath(let id):
+            if env != .identifiable {
+                return nil
+            }
+            if let idx = ids.firstIndex(of: id) {
+                index = idx
+            } else {
+                return nil
+            }
+        }
+        if storage.indices.contains(index) {
+            return storage[index]
+        } else {
+            return nil
+        }
     }
 }

@@ -16,17 +16,17 @@ public struct APStyleContent<Style: APStyle>: ViewModifier {
         self._style = .init(keyPath)
     }
     public func body(content: Content) -> some View {
-        style._body(configuration: configuration(content))
+        style.makeBody(configuration: configuration(content))
     }
     
 }
 
 extension View {
-    public func style<S: APStyle>(_ keyPath: WritableKeyPath<EnvironmentValues, S>, _ style: S) -> some View {
+    @inlinable public func style<S: APStyle>(_ keyPath: WritableKeyPath<EnvironmentValues, S>, _ style: S) -> some View {
         environment(keyPath, style)
     }
     
-    public func applyStyle<S: APStyle>(_ keyPath: WritableKeyPath<EnvironmentValues, S>, configuration: @escaping (S.Configuration.Content) -> S.Configuration) -> some View {
+    @inlinable public func applyStyle<S: APStyle>(_ keyPath: WritableKeyPath<EnvironmentValues, S>, configuration: @escaping (S.Configuration.Content) -> S.Configuration) -> some View {
         modifier(APStyleContent(keyPath, configuration: configuration))
     }
 }
