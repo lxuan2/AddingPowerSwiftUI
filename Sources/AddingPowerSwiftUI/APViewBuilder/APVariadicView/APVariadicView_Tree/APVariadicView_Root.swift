@@ -21,9 +21,9 @@ public protocol APVariadicView_PrimitiveRoot: APVariadicView_RootProtocol
 where Configuration == APVariadicViewPrimitiveConfiguration {}
 
 public struct APVariadicViewConfiguration {
-    public let onInit: AnyPublisher<[APAnySynView], Never>
-    public let onReplace: AnyPublisher<([APAnySynView], Range<Int>, [APAnySynView]), Never>
-    public let onModification: AnyPublisher<([APAnySynView], Range<Int>, [APAnySynView]), Never>
+    public let onInit: AnyPublisher<[APAnyUniqueView], Never>
+    public let onReplace: AnyPublisher<([APAnyUniqueView], Range<Int>, [APAnyUniqueView]), Never>
+    public let onModification: AnyPublisher<([APAnyUniqueView], Range<Int>, [APAnyUniqueView]), Never>
 }
 
 public struct APVariadicViewPrimitiveConfiguration {

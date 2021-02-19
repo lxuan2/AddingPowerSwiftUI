@@ -13,11 +13,11 @@ extension APVariadicView {
         public override init() {}
         
         public var cache: [UUID]? = []
-        public var viewList: [APAnySynView] = []
+        public var viewList: [APAnyUniqueView] = []
         public let root = APVariadicView_MultiViewRoot()
-        public let onInit = PassthroughSubject<[APAnySynView], Never>()
-        public let onReplace = PassthroughSubject<([APAnySynView], Range<Int>, [APAnySynView]), Never>()
-        public let onModification = PassthroughSubject<([APAnySynView], Range<Int>, [APAnySynView]), Never>()
+        public let onInit = PassthroughSubject<[APAnyUniqueView], Never>()
+        public let onReplace = PassthroughSubject<([APAnyUniqueView], Range<Int>, [APAnyUniqueView]), Never>()
+        public let onModification = PassthroughSubject<([APAnyUniqueView], Range<Int>, [APAnyUniqueView]), Never>()
         
         public func toConfiguration() -> APVariadicViewConfiguration {
             APVariadicViewConfiguration(
@@ -84,8 +84,8 @@ extension APVariadicView {
             }
         }
         
-        public func initBranch(_ viewRoot: APVariadicView_MultiViewRoot) -> [APAnySynView] {
-            var newViews: [APAnySynView] = []
+        public func initBranch(_ viewRoot: APVariadicView_MultiViewRoot) -> [APAnyUniqueView] {
+            var newViews: [APAnyUniqueView] = []
             for (i, item) in viewRoot.storage.enumerated() {
                 switch item {
                 case .unary(let nv):

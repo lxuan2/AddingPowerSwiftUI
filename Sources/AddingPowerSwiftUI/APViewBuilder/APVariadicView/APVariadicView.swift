@@ -13,4 +13,4 @@ public enum APVariadicView: Equatable {
     case multi(APVariadicView_MultiViewRoot)
 }
 
-public typealias APVariadicView_UnaryViewRoot = APAnySynView
+public typealias APVariadicView_UnaryViewRoot = APAnyUniqueView

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-public struct ReceiveViewModifier<K: APAnySynUIViewPreferenceKey>: ViewModifier {
+public struct ReceiveViewModifier<K>: ViewModifier where K: PreferenceKey, K.Value: Equatable {
     let key: K.Type
     let value: Binding<K.Value>
     
@@ -25,7 +25,11 @@ public struct ReceiveViewModifier<K: APAnySynUIViewPreferenceKey>: ViewModifier 
 }
 
 extension View {
-    public func onReceiveView<K: APAnySynUIViewPreferenceKey>(_ key: K.Type, value: Binding<K.Value>) -> some View {
+    public func onReceiveView<K: APAnyViewPreferenceKey>(_ key: K.Type, value: Binding<K.Value>) -> some View {
+        modifier(ReceiveViewModifier(key, value: value))
+    }
+    
+    public func onReceiveView<K: APAnyUniqueViewPreferenceKey>(_ key: K.Type, value: Binding<K.Value>) -> some View {
         modifier(ReceiveViewModifier(key, value: value))
     }
 }

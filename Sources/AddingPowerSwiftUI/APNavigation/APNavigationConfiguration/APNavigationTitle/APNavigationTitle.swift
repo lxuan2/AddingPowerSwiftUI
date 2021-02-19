@@ -9,10 +9,10 @@ import SwiftUI
 
 public struct APNavigationTitle: Equatable {
     public var text: String
-    public var view: APAnySynView?
+    public var view: APAnyView?
 }
 
-public struct APNavigationTitlePreferenceKey: APAnySynUIViewPreferenceKey {
+public struct APNavigationTitlePreferenceKey: APAnyViewPreferenceKey {
     public typealias Value = APNavigationTitle?
     
     public static var defaultValue: Value = nil
@@ -21,11 +21,11 @@ public struct APNavigationTitlePreferenceKey: APAnySynUIViewPreferenceKey {
         value = nextValue()
     }
     
-    public static func resolve(_ view: APAnySynView) -> APNavigationTitle? {
+    public static func resolve(_ view: APAnyView) -> APNavigationTitle? {
         APNavigationTitle(text: "", view: view)
     }
     
-    public static func transform(_ value: inout APNavigationTitle?, _ view: APAnySynView) {
+    public static func transform(_ value: inout APNavigationTitle?, _ view: APAnyView) {
         value = APNavigationTitle(text: "", view: view)
     }
 }

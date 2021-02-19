@@ -83,7 +83,7 @@ extension Array where Element == APPath {
         return .multi(root)
     }
     
-    func findView(in viewRoot: APVariadicView_MultiViewRoot) -> APAnySynView? {
+    func findView(in viewRoot: APVariadicView_MultiViewRoot) -> APAnyUniqueView? {
         if viewRoot.location!.count > self.count {
             return nil
         }

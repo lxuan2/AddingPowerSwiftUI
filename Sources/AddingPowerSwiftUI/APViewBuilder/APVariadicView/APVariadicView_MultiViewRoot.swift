@@ -94,7 +94,7 @@ extension APVariadicView_MultiViewRoot {
         return amount
     }
     
-    private func _getLocationAndView(at index: Int, idx: inout Int, current path: [APPath]) -> ([APPath], APAnySynView)? {
+    private func _getLocationAndView(at index: Int, idx: inout Int, current path: [APPath]) -> ([APPath], APAnyUniqueView)? {
         for (i, item) in storage.enumerated() {
             switch item {
             case .unary(let view):
@@ -111,7 +111,7 @@ extension APVariadicView_MultiViewRoot {
         return nil
     }
     
-    public func getLocationAndView(at index: Int) -> ([APPath], APAnySynView)? {
+    public func getLocationAndView(at index: Int) -> ([APPath], APAnyUniqueView)? {
         if index < 0 {
             return nil
         }

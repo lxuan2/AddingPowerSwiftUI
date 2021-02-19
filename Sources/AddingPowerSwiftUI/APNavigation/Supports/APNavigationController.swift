@@ -11,7 +11,7 @@ import SwiftUI
 public class APNavigationController: UINavigationController, ObservableObject {
     public var rootID: UUID?
     public var rootLocation: [APPath]?
-    public var root: APAnySynView? {
+    public var root: APAnyUniqueView? {
         get {
             _root.wrappedRootView.content
         }
@@ -21,7 +21,7 @@ public class APNavigationController: UINavigationController, ObservableObject {
             }
         }
     }
-    public unowned var _root: APNavigationPageController<ModifiedContent<APAnySynView?, _SafeAreaIgnoringLayout>>
+    public unowned var _root: APNavigationPageController<ModifiedContent<APAnyUniqueView?, _SafeAreaIgnoringLayout>>
 
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,7 +30,7 @@ public class APNavigationController: UINavigationController, ObservableObject {
     }
 
     public init() {
-        let x: APAnySynView? = nil
+        let x: APAnyUniqueView? = nil
         let r = APNavigationPageController(rootView: ModifiedContent(content: x, modifier: _SafeAreaIgnoringLayout()))
         self._root = r
         super.init(rootViewController: r)
