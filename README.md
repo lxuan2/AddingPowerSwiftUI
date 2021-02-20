@@ -25,7 +25,7 @@ Therefore, this package aims to achieve following requirements to make `APViewBu
 The main trick is the type erasing by `UIHostingView<V> -> UIViewController` and wrapping the it into a struct to pass through the view hierarchy. As a result, we only install a `View` or `UIViewController` once. Later, it updates itself without any addtional work. In other word, monitor a view in its original decleared place but use it anywhere we want.
 
 A final result like this should work properly.
-```
+```Swift
 @APViewBuilder var demoView: some APView {
     Text("First Item")
     if #available(iOS 14.0, *) {
