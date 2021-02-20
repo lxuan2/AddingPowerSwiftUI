@@ -2,12 +2,11 @@
 //  APConditionalContent.swift
 //  Navigation
 //
-//  Created by Xuan Li on 2/6/21.
 //
 
 import SwiftUI
 
-public struct APConditionalContent<TrueContent, FalseContent>: View where TrueContent : View, FalseContent : View {
+public struct APConditionalContent<TrueContent, FalseContent>: APView where TrueContent : View, FalseContent : View {
     let content: _ConditionalContent<TrueContent, FalseContent>
     let env: APPathEnvironment
     @StateObject private var viewRoot = APVariadicView_MultiViewRoot()

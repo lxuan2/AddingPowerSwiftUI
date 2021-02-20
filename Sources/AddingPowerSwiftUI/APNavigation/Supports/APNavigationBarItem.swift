@@ -2,7 +2,6 @@
 //  APNavigationBarItem.swift
 //  
 //
-//  Created by Xuan Li on 1/21/21.
 //
 
 import SwiftUI
@@ -27,11 +26,7 @@ public struct APNavigationBarItem {
         case minimal
     }
     
-    var backButtonTitle: String?
-    
     var backBarButtonItem: UUID?
-    
-    var leftItemsSupplementBackButton: Bool = false
     
     var leftBarButtonItems: UUID?
     

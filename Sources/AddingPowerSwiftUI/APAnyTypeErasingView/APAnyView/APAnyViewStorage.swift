@@ -2,7 +2,6 @@
 //  APAnyViewStorage.swift
 //  IOS6Navigation
 //
-//  Created by Xuan Li on 1/20/21.
 //
 
 import SwiftUI

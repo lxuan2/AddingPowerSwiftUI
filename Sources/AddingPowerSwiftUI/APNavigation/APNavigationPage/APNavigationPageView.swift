@@ -2,18 +2,20 @@
 //  APNavigationPageView.swift
 //  
 //
-//  Created by Xuan Li on 1/21/21.
 //
 
 import SwiftUI
 
 public struct APNavigationPageView<Content: View>: View {
     let content: Content
-    weak var navigationItem: UINavigationItem?
+    unowned var navigationItem: UINavigationItem!
     
     public var body: some View {
         content
-            .apNavigationTitleEnd(navigationItem: navigationItem)
+            .onPreferenceChange(APNavigationTitlePreferenceKey.self) { title in
+                navigationItem.title = title
+            }
+            .modifier(APNavigationTitleViewModifier(navigationItem: navigationItem))
             .onPreferenceChange(APNavigationTitleDisplayModePreferenceKey.self) { displayMode in
                 var mode: UINavigationItem.LargeTitleDisplayMode
                 switch displayMode {
@@ -24,7 +26,7 @@ public struct APNavigationPageView<Content: View>: View {
                 case .large:
                     mode = .always
                 }
-                navigationItem?.largeTitleDisplayMode = mode
+                navigationItem.largeTitleDisplayMode = mode
             }
             .onPreferenceChange(APNavigationBackButtonDisplayModePreferenceKey.self) { displayMode in
                 var mode: UINavigationItem.BackButtonDisplayMode
@@ -36,13 +38,19 @@ public struct APNavigationPageView<Content: View>: View {
                 case .minimal:
                     mode = .minimal
                 }
-                navigationItem?.backButtonDisplayMode = mode
+                navigationItem.backButtonDisplayMode = mode
             }
             .onPreferenceChange(APNavigationPromptPreferenceKey.self) { prompt in
-                navigationItem?.prompt = prompt
+                navigationItem.prompt = prompt
             }
             .onPreferenceChange(APNavigationBarBackButtonHiddenPreferenceKey.self) { hidesBackButton in
-                navigationItem?.hidesBackButton = hidesBackButton
+                navigationItem.hidesBackButton = hidesBackButton
+            }
+            .onPreferenceChange(APNavigationBackButtonTitlePreferenceKey.self) { title in
+                navigationItem.backButtonTitle = title
+            }
+            .onPreferenceChange(APNavigationLeftItemsSupplementBackButtonPreferenceKey.self) { isSupplement in
+                navigationItem.leftItemsSupplementBackButton = isSupplement
             }
     }
 }

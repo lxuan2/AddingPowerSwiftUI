@@ -1,8 +1,7 @@
 //
 //  APAnyView.swift
-//  IOS6Navigation
 //
-//  Created by Xuan Li on 1/20/21.
+//
 //
 
 import SwiftUI
@@ -36,9 +35,5 @@ public struct APAnyView: UIViewControllerRepresentable, Equatable, Identifiable 
     
     @inlinable public func makeUIViewController() -> UIViewController {
         storage.makeUIViewController()
-    }
-    
-    @inlinable public func makeUIView() -> UIView {
-        storage.makeUIViewController().view
     }
 }

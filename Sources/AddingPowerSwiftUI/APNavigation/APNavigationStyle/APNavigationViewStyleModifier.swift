@@ -2,7 +2,6 @@
 //  APNavigationViewStyleModifier.swift
 //  
 //
-//  Created by Xuan Li on 2/1/21.
 //
 
 import SwiftUI

@@ -2,7 +2,6 @@
 //  APNavigationPrompt.swift
 //  
 //
-//  Created by Xuan Li on 1/21/21.
 //
 
 import SwiftUI

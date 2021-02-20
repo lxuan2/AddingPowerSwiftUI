@@ -2,12 +2,11 @@
 //  APOptionalContent.swift
 //  Navigation
 //
-//  Created by Xuan Li on 2/6/21.
 //
 
 import SwiftUI
 
-public struct APOptionalContent<Wrapped: View>: View {
+public struct APOptionalContent<Wrapped: View>: APView {
     let some: Wrapped?
     @StateObject private var viewRoot = APVariadicView_MultiViewRoot()
     @EnvironmentObject var coordinator: APVariadicView.CoordinatorBase

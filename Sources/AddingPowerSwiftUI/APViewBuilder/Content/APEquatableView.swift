@@ -2,7 +2,6 @@
 //  APEquatableView.swift
 //  Navigation
 //
-//  Created by Xuan Li on 2/7/21.
 //
 
 import SwiftUI

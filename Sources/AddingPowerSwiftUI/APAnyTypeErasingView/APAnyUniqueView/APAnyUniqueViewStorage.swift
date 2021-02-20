@@ -2,7 +2,6 @@
 //  APAnyUniqueViewStorage.swift
 //  
 //
-//  Created by Xuan Li on 2/19/21.
 //
 
 import SwiftUI

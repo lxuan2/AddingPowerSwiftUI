@@ -2,7 +2,6 @@
 //  APVariadicView_Tree.swift
 //  
 //
-//  Created by Xuan Li on 2/15/21.
 //
 
 import SwiftUI

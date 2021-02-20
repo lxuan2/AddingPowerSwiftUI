@@ -2,7 +2,6 @@
 //  APPath.swift
 //  
 //
-//  Created by Xuan Li on 2/13/21.
 //
 
 import SwiftUI

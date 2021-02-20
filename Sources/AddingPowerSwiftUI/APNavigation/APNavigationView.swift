@@ -2,12 +2,11 @@
 //  APNavigationView.swift
 //  
 //
-//  Created by Xuan Li on 2/1/21.
 //
 
 import SwiftUI
 
-public struct APNavigationView<Content: View>: View {
+public struct APNavigationView<Content: APView>: View {
     let content: Content
     
     public var body: some View {

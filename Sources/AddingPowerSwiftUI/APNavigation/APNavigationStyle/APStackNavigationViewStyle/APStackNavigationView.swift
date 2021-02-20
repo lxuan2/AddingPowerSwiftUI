@@ -2,7 +2,6 @@
 //  APStackNavigationView.swift
 //  
 //
-//  Created by Xuan Li on 1/23/21.
 //
 
 import SwiftUI

@@ -2,7 +2,6 @@
 //  APAnyViewStorageBase.swift
 //  
 //
-//  Created by Xuan Li on 1/20/21.
 //
 
 import SwiftUI

@@ -2,7 +2,6 @@
 //  APMultipleAnyViewPreferenceKey.swift
 //  
 //
-//  Created by Xuan Li on 2/5/21.
 //
 
 import SwiftUI

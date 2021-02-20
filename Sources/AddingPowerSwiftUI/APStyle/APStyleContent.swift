@@ -2,7 +2,6 @@
 //  APStyleContent.swift
 //  
 //
-//  Created by Xuan Li on 2/18/21.
 //
 
 import SwiftUI

@@ -2,7 +2,6 @@
 //  APVariadicView_MultiViewRoot.swift
 //  
 //
-//  Created by Xuan Li on 2/11/21.
 //
 
 import SwiftUI

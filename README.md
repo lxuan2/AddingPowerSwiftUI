@@ -1,12 +1,13 @@
 # AddingPowerSwiftUI
 
-An extensional package for SwiftUI, which adds some missing APIs like parsable `ViewBuilder`. 
+An extensional package for SwiftUI, which adds some missing APIs like a parsable `ViewBuilder`. 
 
 ## Status
-Still in development.
+Still in development. Documentation will be added. 
+Currently `APNavigationView` fully uses `APViewBuilder` for the root view. `APStackNavigationViewStyle` uses view transfer and `APStyle`. There is an example project showing some basic usage.
 
 ## Motivation
-`SwiftUI` is an awesome framework that uses simple and clean declarative programming paradigms. However, it's Apple's closed source framework. Developers don't have the full control to the underlying functionality. This makes it hard to create clean APIs like the original. For example, create a container view like this:
+`SwiftUI` is an awesome framework that uses simple and clean declarative programming paradigms. However, it's closed source framework and we do not have the full control to the underlying functionality. This makes it hard to create clean APIs like the original. For example, when creating a container view like this:
 ```Swift
 APTabView {
     View1()
@@ -14,17 +15,47 @@ APTabView {
     View3()
 }
 ```
-Digging into the implementation, you will realize that there is no API to parse the input view like `TupleView<(View1, View2, View3)>`! How can I manage these views individually? As we know, the primitive types like `ZStack` and `List` have this ability inside the `SwiftUI` internel framework. But Apple hides them for some reasons. If you dig into it and look at the `.swiftinterface` file for `SwiftUI`, you know Apple uses `_VariadicView.Tree` to manage the relationship between the root container view (like `ZStack`) and its input view.
+we found that no public APIs can be used to parse the view  `TupleView<(View1, View2, View3)>`. On the contrast, primitive types like `ZStack` and `NavigationView` use `_VariadicView.Tree` to manage the structure inside the `SwiftUI` framework. The `SwiftUI.swiftmodule/arm64.swiftinterface` file shows more details about the hidden public APIs.
 
-Therefore, we wonder we can interpret the view manually. There are several requirements.
-* correctness
-* clean like native APIs
-* generic to handle any input type like `TupleView<(Text, Image)>` and `TupleView<(View1, View2, View3)>`
+Therefore, this package aims to achieve following requirements to make `APViewBuilder` behave like native APIs:
+* able to handle any input type like `TupleView<(Text, Image)>` and `TupleView<(View1, View2, View3)>`
 * allow conditional statements like `if` and `switch`
-* high efficiency. We don't want everything becomes `AnyView` or every views get updated for unrelated changes.  Only modified content needs update.
+* high efficiency. We don't want everything becomes `AnyView` or views get updated for unrelated changes. Only modified content needs update.
 
-This package achieves these goals in a very efficient way and it seems likes native APIs. No complicated usage. Only replace `@ViewBuilder` with `@APViewBuilder` for the input view. To interpret it inside the container view, just attach `.monitorViews(inputView, APMonitorDelegate)` to a view and implement the delegate to get a list of parsed views. No worry to view content updates, since they update themselves. If views are added or removed, the delegate you provide can handle them. For more implementation details, refer to the documentation for `@APViewBuilder`.
+The main trick is the type erasing by `UIHostingView<V> -> UIViewController` and wrapping the it into a struct to pass through the view hierarchy. As a result, we only install a `View` or `UIViewController` once. Later, it updates itself without any addtional work. In other word, monitor a view in its original decleared place but use it anywhere we want.
 
-`AddingPowerSwiftUI` also provide other missing handy APIs like `Style` and customizable `APNavigationView`. This is a similar behavior to `StackNavigationViewStyle` and `DoubleColumnNavigationViewStyle` but allows building your own view styles.
+A final result like this should work properly.
+```
+@APViewBuilder var demoView: some APView {
+    Text("First Item")
+    if #available(iOS 14.0, *) {
+        Text("IOS 14")
+    }
+    APGroup {
+        Text("0")
+        if isOne {
+            Text("1")
+        }
+        else {
+            Text("2")
+            if isThree {
+                Text("3")
+                
+            } else {
+                Text("4")
+            }
+        }
+    }
+    APForEach(0..<2) {
+        if shouldShowContent {
+            Text("\($0)")
+        }
+        Divider()
+    }
+    Color.green
+}
+```
+
+This package tries to reimplement some native APIs like `NavigationView` and `TabView` to discover all the need. Some handy APIs like view transfer are provided. (Sometimes we declear an view in some place but we don't want to use it right there, for example,`.tabItem()`. Therefore, we would like to transfer it like other preference content). 
 
 In all, `AddingPowerSwiftUI` is created to provide more control for developers to `SwiftUI` framework.
