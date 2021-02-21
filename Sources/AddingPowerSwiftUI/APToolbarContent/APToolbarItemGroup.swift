@@ -20,4 +20,22 @@ public struct APToolbarItemGroup<Content> : APToolbarContent where Content : Vie
     public static func _makeContent(content: APToolbarItemGroup<Content>) -> APUnaryContent<Content> {
         APUnaryContent(content.content)
     }
+    
+    public func _makeContent(content: APToolbarItemGroup<Content>) -> some APView {
+        APToolbarItemGroupHost(content)
+    }
+}
+
+struct APToolbarItemGroupHost<V: View>: APView {
+//    @StateObject private var storage: APBarCustomViewStorage<V>
+    let content: APToolbarItemGroup<V>
+    
+    public var body: some View {
+        EmptyView()
+//            .transferView(APVariadicView_PreferenceKey.self, value: value)
+    }
+    
+    public init(_ content: APToolbarItemGroup<V>) {
+        self.content = content
+    }
 }

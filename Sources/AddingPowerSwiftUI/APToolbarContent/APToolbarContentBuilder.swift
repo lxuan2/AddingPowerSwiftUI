@@ -1,5 +1,5 @@
 //
-//  SwiftUIView.swift
+//  APToolbarContentBuilder.swift
 //  
 //
 //
@@ -10,7 +10,7 @@ import SwiftUI
 public struct APToolbarContentBuilder {
     
     public static func buildExpression<Content>(_ content: Content) -> some APView where Content : APToolbarContent {
-        APToolbarUnaryContent(content)
+        Content._makeContent(content: content)
     }
     
     public static func buildBlock<Content>(_ content: Content) -> some APView where Content : APView {

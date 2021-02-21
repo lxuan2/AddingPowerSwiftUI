@@ -6,7 +6,7 @@
 
 import SwiftUI
 
-public struct APToolbarItemPlacement {
+public struct APToolbarItemPlacement: Equatable {
     public static let automatic = APToolbarItemPlacement(role: .automatic)
     
     @available(watchOS, unavailable)

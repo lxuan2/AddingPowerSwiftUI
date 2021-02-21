@@ -6,7 +6,7 @@
 
 import SwiftUI
 
-public struct APToolbarItemGroupModifier<ToolBarContent: APView>: ViewModifier {
+public struct APToolbarItemGroupModifier<ToolBarContent: View>: ViewModifier {
     let content: ToolBarContent
     public func body(content: Content) -> some View {
         content
@@ -18,6 +18,10 @@ public struct APToolbarItemGroupModifier<ToolBarContent: APView>: ViewModifier {
     init(@APToolbarContentBuilder content: () -> ToolBarContent) {
         self.content = content()
     }
+    
+    init(content: ToolBarContent) {
+        self.content = content
+    }
 }
 
 extension View {
@@ -25,7 +29,7 @@ extension View {
         modifier(APToolbarItemGroupModifier(content: { APToolbarItemGroup(content: content) }))
     }
     
-    public func apToolbar<Content>(@APToolbarContentBuilder content: () -> Content) -> some View where Content : APToolbarContent {
-        modifier(APToolbarItemGroupModifier(content: { content() }))
+    public func apToolbar<Content>(@APToolbarContentBuilder content: () -> Content) -> some View where Content : APView {
+        modifier(APToolbarItemGroupModifier(content: content))
     }
 }

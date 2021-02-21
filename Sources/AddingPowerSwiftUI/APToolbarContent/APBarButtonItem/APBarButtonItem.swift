@@ -8,17 +8,26 @@ import SwiftUI
 
 public struct APBarButtonItem: Equatable, Identifiable {
     
-    public var storage: APBarButtonItemStorageBase
+    public private(set) var storage: APBarButtonItemStorageBase
+    public private(set) var placement: APToolbarItemPlacement
     
-    @inlinable public init(storage: APBarButtonItemStorageBase) {
+    public init(placement: APToolbarItemPlacement, storage: APBarButtonItemStorageBase) {
         self.storage = storage
+        self.placement = placement
     }
     
-    @inlinable public func getUIBarButtonItem() -> UIBarButtonItem {
+    @inlinable var item: UIBarButtonItem {
         storage.getUIBarButtonItem()
     }
     
     @inlinable public var id: UUID {
         storage.id
+    }
+}
+
+struct APBarButtonItemPreferenceKey: PreferenceKey {
+    static var defaultValue: [APBarButtonItem] = []
+    static func reduce(value: inout [APBarButtonItem], nextValue: () -> [APBarButtonItem]) {
+        value.append(contentsOf: nextValue())
     }
 }

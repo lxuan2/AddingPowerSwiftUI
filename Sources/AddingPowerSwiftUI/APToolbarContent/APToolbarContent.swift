@@ -8,7 +8,9 @@ import SwiftUI
 
 public protocol APToolbarContent {
     associatedtype Body : APToolbarContent
-    @APToolbarContentBuilder var body: Self.Body { get }
+    @APToolbarContentBuilder var body: Body { get }
+    associatedtype _Body : APView
+    static func _makeContent(content: Self) -> _Body
 }
 
 extension APToolbarContent where Body == Never {
@@ -17,18 +19,6 @@ extension APToolbarContent where Body == Never {
     }
 }
 
-extension Never: APToolbarContent {}
-
-struct APToolbarUnaryContent<V: APToolbarContent>: APView {
-//    @StateObject private var storage: APBarCustomViewStorage<V>
-    let value: V
-    
-    public var body: some View {
-        EmptyView()
-//            .transferView(APVariadicView_PreferenceKey.self, value: value)
-    }
-    
-    public init(_ v: V) {
-        self.value = v
-    }
+extension Never: APToolbarContent, APView {
+    public static func _makeContent(content: Never) -> Never {}
 }
