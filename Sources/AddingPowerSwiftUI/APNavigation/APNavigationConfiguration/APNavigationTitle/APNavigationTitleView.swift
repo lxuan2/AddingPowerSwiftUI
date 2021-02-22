@@ -29,20 +29,3 @@ extension View {
         transferView(APNavigationTitleViewPreferenceKey.self, value: title())
     }
 }
-
-public struct APNavigationTitleViewModifier: ViewModifier {
-    @StateObject var viewController = APNavigationTitleViewController()
-    unowned var navigationItem: UINavigationItem
-    
-    public func body(content: Content) -> some View {
-        content
-            .onPreferenceChange(APNavigationTitleViewPreferenceKey.self) { title in
-                viewController.body = title?.getUIViewController()
-                navigationItem.titleView = viewController.body?.view
-            }
-    }
-    
-    class APNavigationTitleViewController: ObservableObject {
-        var body: UIViewController? = nil
-    }
-}

@@ -15,7 +15,9 @@ public struct APNavigationPageView<Content: View>: View {
             .onPreferenceChange(APNavigationTitlePreferenceKey.self) { title in
                 navigationItem.title = title
             }
-            .modifier(APNavigationTitleViewModifier(navigationItem: navigationItem))
+            .onPreferenceChange(APNavigationTitleViewPreferenceKey.self) { title in
+                navigationItem.titleView = title?.getView()
+            }
             .onPreferenceChange(APNavigationTitleDisplayModePreferenceKey.self) { displayMode in
                 var mode: UINavigationItem.LargeTitleDisplayMode
                 switch displayMode {

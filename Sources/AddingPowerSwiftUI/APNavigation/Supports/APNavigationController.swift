@@ -4,7 +4,10 @@
 //
 //
 
-import UIKit
+#if canImport(UIKit)
+#elseif canImport(AppKit)
+#endif
+
 import SwiftUI
 
 public class APNavigationController: UINavigationController, ObservableObject {
@@ -16,7 +19,7 @@ public class APNavigationController: UINavigationController, ObservableObject {
         }
         set {
             if _root.wrappedRootView.content != newValue {
-                _root.wrappedRootView = ModifiedContent(content: newValue, modifier: _SafeAreaIgnoringLayout())
+                _root.wrappedRootView = ModifiedContent(content: newValue, modifier: _SafeAreaIgnoringLayout(edges: [.horizontal, .bottom]))
             }
         }
     }
@@ -30,7 +33,7 @@ public class APNavigationController: UINavigationController, ObservableObject {
 
     public init() {
         let x: APAnyUniqueView? = nil
-        let r = APNavigationPageController(rootView: ModifiedContent(content: x, modifier: _SafeAreaIgnoringLayout()))
+        let r = APNavigationPageController(rootView: ModifiedContent(content: x, modifier: _SafeAreaIgnoringLayout(edges: [.horizontal, .bottom])))
         self._root = r
         super.init(rootViewController: r)
     }

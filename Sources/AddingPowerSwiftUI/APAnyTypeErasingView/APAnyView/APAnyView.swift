@@ -16,7 +16,7 @@ import SwiftUI
 /// location which rendered it. This is a very effiecent method to make and update
 /// the view when transfering one view to another place through envrionment or
 /// preference path.
-public struct APAnyView: UIViewControllerRepresentable, Equatable, Identifiable {
+public struct APAnyView: Equatable, Identifiable {
     public var id: UUID {
         storage.id
     }
@@ -27,13 +27,26 @@ public struct APAnyView: UIViewControllerRepresentable, Equatable, Identifiable 
         self.storage = storage
     }
     
-    public func makeUIViewController(context: Context) -> UIViewController {
-        storage.makeUIViewController()
-    }
-    
-    public func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
-    
-    @inlinable public func makeUIViewController() -> UIViewController {
-        storage.makeUIViewController()
+    @inlinable public func makeView() -> ClassView {
+        storage.makeView()
     }
 }
+
+#if os(iOS) || os(tvOS) || targetEnvironment(macCatalyst)
+extension APAnyView: UIViewRepresentable {
+    public func makeUIView(context: Context) -> UIView {
+        storage.makeView()
+    }
+    
+    public func updateUIView(_ uiView: UIView, context: Context) {}
+}
+
+#elseif os(macOS)
+extension APAnyView: NSViewRepresentable {
+    public func makeNSView(context: Context) -> NSView {
+        storage.makeView()
+    }
+    
+    public func updateNSView(_ nsView: NSView, context: Context) {}
+}
+#endif

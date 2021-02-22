@@ -13,11 +13,12 @@ public class APAnyUniqueViewStorageBase: Identifiable, Equatable, ObservableObje
     
     public let id = UUID()
     
-    public func getUIViewController() -> UIViewController {
-        fatalError("APAnyUniqueViewStorageBase: getUIViewController is not implemented!")
+    public func getView() -> ClassView {
+        fatalError("APAnyUniqueViewStorageBase: getView is not implemented!")
     }
     
     public var isInUse: Bool {
         fatalError("APAnyUniqueViewStorageBase: isInUse is not implemented!")
     }
 }
+

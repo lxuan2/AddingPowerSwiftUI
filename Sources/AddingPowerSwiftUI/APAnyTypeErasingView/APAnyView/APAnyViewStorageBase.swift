@@ -13,7 +13,7 @@ public class APAnyViewStorageBase: Identifiable, Equatable, ObservableObject {
     
     public let id = UUID()
     
-    public func makeUIViewController() -> UIViewController {
-        fatalError("APAnyViewStorageBase: makeUIViewController is not implemented!")
+    public func makeView() -> ClassView {
+        fatalError("APAnyViewStorageBase: makeView is not implemented!")
     }
 }

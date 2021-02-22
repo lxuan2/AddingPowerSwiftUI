@@ -8,19 +8,17 @@ import SwiftUI
 
 public class APAnyViewStorage<V: View> : APAnyViewStorageBase {
     private var view: V?
-    private var subscribers: [Weak<UIHostingController<V>>]
+    private var subscribers: [Weak<UIHostingView<V>>]
     
     public init(_ v: V) {
         view = v
         subscribers = []
     }
     
-    public override func makeUIViewController() -> UIViewController {
-        let vc = UIHostingController(rootView: view!)
-        vc.view.isOpaque = false
-        vc.view.backgroundColor = .clear
-        subscribers.append(Weak(body: vc))
-        return vc
+    public override func makeView() -> ClassView {
+        let v = UIHostingView(rootView: view!)
+        subscribers.append(Weak(body: v))
+        return v
     }
     
     public func updateView(_ v: V) {

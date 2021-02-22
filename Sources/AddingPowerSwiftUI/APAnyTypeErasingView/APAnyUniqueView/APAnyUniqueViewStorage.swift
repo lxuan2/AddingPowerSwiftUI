@@ -8,22 +8,20 @@ import SwiftUI
 
 public class APAnyUniqueViewStorage<V: View> : APAnyUniqueViewStorageBase {
     private var view: V
-    private weak var subscriber: UIHostingController<V>?
+    private weak var subscriber: UIHostingView<V>?
     
     public init(_ v: V) {
         view = v
         subscriber = nil
     }
     
-    public override func getUIViewController() -> UIViewController {
+    public override func getView() -> ClassView {
         if let s = subscriber {
             return s
         }
-        let vc = UIHostingController(rootView: view)
-        vc.view.isOpaque = false
-        vc.view.backgroundColor = .clear
-        subscriber = vc
-        return vc
+        let v = UIHostingView(rootView: view)
+        subscriber = v
+        return v
     }
     
     public func updateView(_ v: V) {
