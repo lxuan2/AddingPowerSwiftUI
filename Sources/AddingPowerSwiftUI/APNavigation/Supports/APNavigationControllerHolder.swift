@@ -7,7 +7,7 @@
 import SwiftUI
 
 public struct APNavigationControllerHolder {
-    weak var vc: UINavigationController?
+    public weak var vc: UINavigationController?
 }
 
 public struct APNavigationControllerHolderEnvironmentKey: EnvironmentKey {

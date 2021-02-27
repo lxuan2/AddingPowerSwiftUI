@@ -10,14 +10,18 @@ public struct APNavigationView<Content: APView>: View {
     let content: Content
     
     public var body: some View {
-        content
-            .applyStyle(\.apNavigationStyle) {
-                APNavigationViewStyleConfiguration($0)
-            }
+        APResolvedNavigationView()
+            .fill(APNavigationViewStyleConfiguration.Content.self, with: content)
             .edgesIgnoringSafeArea(.all)
     }
     
     public init(@APViewBuilder content: () -> Content) {
         self.content = content()
+    }
+}
+
+struct APResolvedNavigationView: View {
+    var body: some View {
+        APStyleView(APNavigationViewStyleKey.self, APNavigationViewStyleConfiguration())
     }
 }

@@ -6,33 +6,22 @@
 
 import SwiftUI
 
-public struct APAnyAPNavigationViewStyle: APStyle {
-    let content: (APNavigationViewStyleConfiguration) -> APAnyRepresentable
-    
-    public func makeBody(configuration: APNavigationViewStyleConfiguration) -> some View {
-        content(configuration)
-    }
-    
-    public init<S: APNavigationViewStyle>(_ s: S) {
-        self.content = {
-            APAnyRepresentable(s.makeBody(configuration: $0))
-        }
+struct APNavigationViewStyleKey: APStyleKey {
+    static func makeDefault(configuration: APNavigationViewStyleConfiguration) -> some View {
+        APStackNavigationViewStyle().makeBody(configuration: configuration)
     }
 }
 
-public struct APAnyNavigationViewStyle: EnvironmentKey {
-    public static var defaultValue = APAnyAPNavigationViewStyle(APStackNavigationViewStyle())
-}
-
-extension EnvironmentValues {
-    public var apNavigationStyle: APAnyAPNavigationViewStyle {
-        get { self[APAnyNavigationViewStyle.self] }
-        set { self[APAnyNavigationViewStyle.self] = newValue }
+struct APNavigationViewStyleModifier<Style: APNavigationViewStyle>: ViewModifier {
+    let style: Style
+    
+    func body(content: Content) -> some View {
+        content.style(APNavigationViewStyleKey.self, style.makeBody)
     }
 }
 
 extension View {
     public func apNavigationViewStyle<S: APNavigationViewStyle>(_ style: S) -> some View {
-        self.style(\.apNavigationStyle, APAnyAPNavigationViewStyle(style))
+        modifier(APNavigationViewStyleModifier(style: style))
     }
 }

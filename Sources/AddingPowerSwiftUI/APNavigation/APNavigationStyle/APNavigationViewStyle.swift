@@ -8,17 +8,19 @@ import SwiftUI
 
 public protocol APNavigationViewStyle {
     associatedtype Body : View
-    func makeBody(configuration: APNavigationViewStyleConfiguration) -> Self.Body
+    func makeBody(configuration: APNavigationViewStyleConfiguration) -> Body
 }
 
 public struct APNavigationViewStyleConfiguration {
+    public struct Content: View {
+        public typealias Body = Never
+    }
+    
     public let content: APNavigationViewStyleConfiguration.Content
     
-    public init(_ content: Content) {
-        self.content = content
+    init() {
+        self.content = Content()
     }
 }
 
-extension APNavigationViewStyleConfiguration: APStyleConfiguration {
-    public typealias Style = APAnyAPNavigationViewStyle
-}
+extension APNavigationViewStyleConfiguration.Content: APStaticView {}

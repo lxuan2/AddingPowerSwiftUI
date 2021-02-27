@@ -19,6 +19,10 @@ public struct APViewBuilder {
         APUnaryContent(content)
     }
     
+    public static func buildExpression(_ content: Image) -> some APView {
+        APUnaryContent(content.border(Color.red))
+    }
+    
     public static func buildExpression<Content>(_ content: Content) -> some APView where Content : APView {
         content
     }
