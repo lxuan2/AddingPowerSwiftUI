@@ -25,7 +25,7 @@ struct APStaticSourceWriter<Canvas: APCanvas, Source: View>: ViewModifier {
 }
 
 extension APStaticSourceWriter {
-    class Coordinator: APCanvasCoordinator {
+    class Coordinator: APCanvasCoordinator, ObservableObject {
         private var source: Source
         private var subscribers: [Subscriber]
         

@@ -7,76 +7,64 @@
 
 import SwiftUI
 
-public struct APStyleWritter<Key: APStyleCanvas, Style: View>: ViewModifier {
+// MARK: - APStyleWritter
+
+public struct APStyleWritter<Canvas: APStyleCanvas, StyleContent: View>: ViewModifier {
     @StateObject private var coordinator: Coordinator
-    let style: (Key.Configuration) -> Style
+    let styleContent: (Canvas.Configuration) -> StyleContent
     
     public func body(content: Content) -> some View {
-        coordinator.updateStyle(style: style)
-        return content.environment(\.[HashableType(Key.self)], coordinator)
+        coordinator.updateStyle(content: styleContent)
+        return content.environment(\.[HashableType(Canvas.self)], coordinator)
     }
     
-    public init(_ key: Key.Type, _ style: @escaping (Key.Configuration) -> Style) {
-        self._coordinator = .init(wrappedValue: .init(style: style))
-        self.style = style
+    public init(_ canvas: Canvas.Type, _ content: @escaping (Canvas.Configuration) -> StyleContent) {
+        self._coordinator = .init(wrappedValue: .init(content: content))
+        self.styleContent = content
     }
 }
 
 extension APStyleWritter {
-    class Coordinator: APStyleCoordinatorBase<Key.Configuration>, ObservableObject {
-        private var style: (Key.Configuration) -> Style
+    class Coordinator: APStyleCanvasCoordinator<Canvas.Configuration>, ObservableObject {
+        private var content: (Canvas.Configuration) -> StyleContent
         private var subscribers: [Subscriber]
         
-        init(style: @escaping (Key.Configuration) -> Style) {
-            self.style = style
+        init(content: @escaping (Canvas.Configuration) -> StyleContent) {
+            self.content = content
             self.subscribers = []
         }
         
-        override func makeViewController(configuration: Key.Configuration) -> UIViewController {
-            let vc = UIHostingController(rootView: style(configuration))
+        override func makeViewController(configuration: Canvas.Configuration) -> UIViewController {
+            let vc = UIHostingController(rootView: content(configuration))
             subscribers.append(.init(some: vc, configuration: configuration))
             return vc
         }
         
-        override func updateConfiguration(configuration: Key.Configuration, uiviewController: UIViewController) {
-            subscribers.removeAll {
-                $0.some == nil
-            }
+        override func updateConfiguration(configuration: Canvas.Configuration, uiviewController: UIViewController) {
+            subscribers.removeAll { $0.some == nil }
             if let index = subscribers.firstIndex(where: { $0.some == uiviewController }) {
                 subscribers[index].configuration = configuration
-                subscribers[index].some?.rootView = style(configuration)
+                subscribers[index].some?.rootView = content(configuration)
             }
         }
         
-        func updateStyle(style: @escaping (Key.Configuration) -> Style) {
-            self.style = style
-            subscribers.removeAll {
-                $0.some == nil
-            }
-            subscribers.forEach {
-                $0.some!.rootView = style($0.configuration)
-            }
+        func updateStyle(content: @escaping (Canvas.Configuration) -> StyleContent) {
+            self.content = content
+            subscribers.removeAll { $0.some == nil }
+            subscribers.forEach { $0.some!.rootView = content($0.configuration) }
         }
         
         private struct Subscriber {
-            weak var some: UIHostingController<Style>?
-            var configuration: Key.Configuration!
+            weak var some: UIHostingController<StyleContent>?
+            var configuration: Canvas.Configuration!
         }
     }
 }
 
-public class APStyleCoordinatorBase<Configuration> {
-    func makeViewController(configuration: Configuration) -> UIViewController {
-        fatalError()
-    }
-    
-    func updateConfiguration(configuration: Configuration, uiviewController: UIViewController) {
-        fatalError()
-    }
-}
+// MARK: - style(_:,_:)
 
 extension View {
-    public func style<Key: APStyleCanvas, Style: View>(_ key: Key.Type, _ style: @escaping (Key.Configuration) -> Style) -> some View {
-        modifier(APStyleWritter(key, style))
+    public func style<Canvas: APStyleCanvas, Content: View>(_ canvas: Canvas.Type, _ content: @escaping (Canvas.Configuration) -> Content) -> some View {
+        modifier(APStyleWritter(canvas, content))
     }
 }

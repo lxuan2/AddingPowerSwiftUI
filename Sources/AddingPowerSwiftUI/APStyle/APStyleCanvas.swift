@@ -9,7 +9,7 @@ import SwiftUI
 
 // MARK: - APStyleCanvas
 
-public protocol APStyleCanvas: EnvironmentKey where Value == APStyleCoordinatorBase<Configuration>? {
+public protocol APStyleCanvas: EnvironmentKey where Value == APStyleCanvasCoordinator<Configuration>? {
     associatedtype Configuration
     associatedtype DefaultBody: View
     static func makeDefault(configuration: Configuration) -> DefaultBody
@@ -19,6 +19,18 @@ extension APStyleCanvas {
     public static var defaultValue: Value { nil }
     public static func makeBody(configuration: Configuration) -> _APStyleView<Self> {
         _APStyleView(configuration: configuration)
+    }
+}
+
+// MARK: - APStyleCanvasCoordinator
+
+public class APStyleCanvasCoordinator<Configuration> {
+    func makeViewController(configuration: Configuration) -> UIViewController {
+        fatalError("APStyleCanvasCoordinator: base class is not implemented")
+    }
+    
+    func updateConfiguration(configuration: Configuration, uiviewController: UIViewController) {
+        fatalError("APStyleCanvasCoordinator: base class is not implemented")
     }
 }
 

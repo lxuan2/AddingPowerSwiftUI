@@ -32,7 +32,7 @@ extension APCanvas where DefaultBody == EmptyView {
 
 // MARK: - APCanvasCoordinator
 
-public class APCanvasCoordinator: ObservableObject {
+public class APCanvasCoordinator {
     public func makeViewController() -> UIViewController {
         fatalError("StaticView_Coordinator: base class is not implmented")
     }
