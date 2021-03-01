@@ -1,5 +1,5 @@
 //
-//  APStaticView.swift
+//  APCanvas.swift
 //  
 //
 //  Created by Xuan Li on 2/26/21.
@@ -7,15 +7,15 @@
 
 import SwiftUI
 
-// MARK: - APStaticView
+// MARK: - APCanvas
 
-protocol APStaticView: UIViewControllerRepresentable, EnvironmentKey where Value == APStaticView_Coordinator? {
-    associatedtype StaticBody: View
-    static func makeDefault() -> StaticBody
+protocol APCanvas: UIViewControllerRepresentable, EnvironmentKey where Value == APCanvasCoordinator? {
+    associatedtype DefaultBody: View
+    static func makeDefault() -> DefaultBody
 }
 
-extension APStaticView {
-    public static var defaultValue: APStaticView_Coordinator? { nil }
+extension APCanvas {
+    public static var defaultValue: APCanvasCoordinator? { nil }
     
     public func makeUIViewController(context: UIViewControllerRepresentableContext<Self>) -> UIViewController {
         context.environment[Self]?.makeViewController() ?? UIHostingController(rootView: Self.makeDefault())
@@ -24,15 +24,15 @@ extension APStaticView {
     public func updateUIViewController(_ uiViewController: UIViewController, context: UIViewControllerRepresentableContext<Self>) {}
 }
 
-extension APStaticView where StaticBody == EmptyView {
+extension APCanvas where DefaultBody == EmptyView {
     static func makeDefault() -> EmptyView {
         EmptyView()
     }
 }
 
-// MARK: - APStaticView_Coordinator
+// MARK: - APCanvasCoordinator
 
-public class APStaticView_Coordinator: ObservableObject {
+public class APCanvasCoordinator: ObservableObject {
     public func makeViewController() -> UIViewController {
         fatalError("StaticView_Coordinator: base class is not implmented")
     }

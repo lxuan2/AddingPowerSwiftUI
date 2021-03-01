@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-public struct APStyleWritter<Key: APStyleKey, Style: View>: ViewModifier {
+public struct APStyleWritter<Key: APStyleCanvas, Style: View>: ViewModifier {
     @StateObject private var coordinator: Coordinator
     let style: (Key.Configuration) -> Style
     
@@ -76,7 +76,7 @@ public class APStyleCoordinatorBase<Configuration> {
 }
 
 extension View {
-    public func style<Key: APStyleKey, Style: View>(_ key: Key.Type, _ style: @escaping (Key.Configuration) -> Style) -> some View {
+    public func style<Key: APStyleCanvas, Style: View>(_ key: Key.Type, _ style: @escaping (Key.Configuration) -> Style) -> some View {
         modifier(APStyleWritter(key, style))
     }
 }

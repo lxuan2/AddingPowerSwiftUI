@@ -12,7 +12,6 @@ public struct APNavigationView<Content: APView>: View {
     public var body: some View {
         APResolvedNavigationView()
             .fill(APNavigationViewStyleConfiguration.Content.self, with: content)
-            .edgesIgnoringSafeArea(.all)
     }
     
     public init(@APViewBuilder content: () -> Content) {
@@ -22,6 +21,8 @@ public struct APNavigationView<Content: APView>: View {
 
 struct APResolvedNavigationView: View {
     var body: some View {
-        APStyleView(APNavigationViewStyleKey.self, APNavigationViewStyleConfiguration())
+        APNavigationViewStyleCanvas
+            .makeBody(configuration: APNavigationViewStyleConfiguration())
+            .edgesIgnoringSafeArea(.all)
     }
 }

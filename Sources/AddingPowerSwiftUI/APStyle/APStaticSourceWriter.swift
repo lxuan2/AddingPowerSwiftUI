@@ -9,13 +9,13 @@ import SwiftUI
 
 // MARK: - APStaticSourceWriter
 
-struct APStaticSourceWriter<Target: APStaticView, Source: View>: ViewModifier {
+struct APStaticSourceWriter<Canvas: APCanvas, Source: View>: ViewModifier {
     @StateObject private var coordinator: Coordinator
     var source: Source
     
     public func body(content: Content) -> some View {
         coordinator.updateView(source)
-        return content.environment(\.[HashableType(Target.self)], coordinator)
+        return content.environment(\.[HashableType(Canvas.self)], coordinator)
     }
     
     public init(source: Source) {
@@ -25,7 +25,7 @@ struct APStaticSourceWriter<Target: APStaticView, Source: View>: ViewModifier {
 }
 
 extension APStaticSourceWriter {
-    class Coordinator: APStaticView_Coordinator {
+    class Coordinator: APCanvasCoordinator {
         private var source: Source
         private var subscribers: [Subscriber]
         
@@ -59,8 +59,8 @@ extension APStaticSourceWriter {
 // MARK: - fill(_:,with:)
 
 extension View {
-    func fill<Target: APStaticView, Source: View>(_ key: Target.Type, with source: Source) -> some View {
-        modifier(APStaticSourceWriter<Target, Source>(source: source))
+    func fill<Canvas: APCanvas, Source: View>(_ key: Canvas.Type, with source: Source) -> some View {
+        modifier(APStaticSourceWriter<Canvas, Source>(source: source))
     }
 }
 
@@ -83,7 +83,7 @@ public struct HashableType<T> : Hashable {
     }
 }
 
-// MARK: - APStaticView as key to APStaticView_Coordinator?
+// MARK: - Type of EnvironmentKey as Key
 
 extension EnvironmentValues {
     public subscript<K>(key: HashableType<K>) -> K.Value where K: EnvironmentKey {

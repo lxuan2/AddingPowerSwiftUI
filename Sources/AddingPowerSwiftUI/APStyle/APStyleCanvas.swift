@@ -1,5 +1,5 @@
 //
-//  APStyleView.swift
+//  APStyleCanvas.swift
 //  
 //
 //  Created by Xuan Li on 2/26/21.
@@ -7,15 +7,32 @@
 
 import SwiftUI
 
-public struct APStyleView<Key: APStyleKey> {
+// MARK: - APStyleCanvas
+
+public protocol APStyleCanvas: EnvironmentKey where Value == APStyleCoordinatorBase<Configuration>? {
+    associatedtype Configuration
+    associatedtype DefaultBody: View
+    static func makeDefault(configuration: Configuration) -> DefaultBody
+}
+
+extension APStyleCanvas {
+    public static var defaultValue: Value { nil }
+    public static func makeBody(configuration: Configuration) -> _APStyleView<Self> {
+        _APStyleView(configuration: configuration)
+    }
+}
+
+// MARK: - _APStyleView
+
+public struct _APStyleView<Key: APStyleCanvas> {
     var configuration: Key.Configuration
     
-    public init(_ key: Key.Type, _ configuration: Key.Configuration) {
+    public init(configuration: Key.Configuration) {
         self.configuration = configuration
     }
 }
 
-extension APStyleView: UIViewControllerRepresentable {
+extension _APStyleView: UIViewControllerRepresentable {
     public func makeCoordinator() -> Coordinator {
         Coordinator()
     }
@@ -38,6 +55,6 @@ extension APStyleView: UIViewControllerRepresentable {
     }
     
     public class Coordinator {
-        weak var defaultStorage: UIHostingController<Key.Body>?
+        weak var defaultStorage: UIHostingController<Key.DefaultBody>?
     }
 }
