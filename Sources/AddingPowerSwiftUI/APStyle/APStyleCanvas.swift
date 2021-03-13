@@ -50,8 +50,9 @@ extension _APStyleView: UIViewControllerRepresentable {
     }
     
     public func makeUIViewController(context: Context) -> UIViewController {
-        if let vc = context.environment[Key.self]?.makeViewController(configuration: configuration) {
-            return vc
+        if let styleCoordinator = context.environment[Key.self] {
+            context.coordinator.styleCoordinator = styleCoordinator
+            return styleCoordinator.makeViewController(configuration: configuration)
         }
         let vc = UIHostingController(rootView: Key.makeDefault(configuration: configuration))
         context.coordinator.defaultStorage = vc
@@ -62,11 +63,13 @@ extension _APStyleView: UIViewControllerRepresentable {
         if let storage = context.coordinator.defaultStorage {
             storage.rootView = Key.makeDefault(configuration: configuration)
         } else {
-            context.environment[Key.self]?.updateConfiguration(configuration: configuration, uiviewController: uiViewController)
+            context.coordinator.styleCoordinator
+                .updateConfiguration(configuration: configuration, uiviewController: uiViewController)
         }
     }
     
     public class Coordinator {
         weak var defaultStorage: UIHostingController<Key.DefaultBody>?
+        var styleCoordinator: APStyleCanvasCoordinator<Key.Configuration>!
     }
 }

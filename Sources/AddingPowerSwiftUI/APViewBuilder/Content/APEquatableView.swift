@@ -10,7 +10,7 @@ struct APEquatableView<ID : Hashable, Content: View>: View {
     let id: ID
     let content: Content
     
-    public init(id: ID, content: () -> Content) {
+    public init(id: ID, @ViewBuilder content: () -> Content) {
         self.id = id
         self.content = content()
     }

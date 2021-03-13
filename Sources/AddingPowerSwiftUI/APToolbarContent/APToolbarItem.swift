@@ -10,37 +10,47 @@ public struct APToolbarItem<Content> : APToolbarContent where Content : View {
     var placement: APToolbarItemPlacement
     var content: Content
     
-    public typealias Body = Swift.Never
-    public static func _makeContent(content: APToolbarItem<Content>) -> APUnaryContent<Content> {
-        APUnaryContent(content.content)
-    }
-    
     public init(placement: APToolbarItemPlacement = .automatic, @ViewBuilder content: () -> Content) {
         self.content = content()
         self.placement = placement
     }
     
-    public func _makeContent(content: APToolbarItem<Content>) -> some APView {
-        APToolbarItemHost(content)
+    public static func _makeContent(content: APToolbarItem<Content>) -> some View {
+        APToolbarItemHostView(item: content)
     }
 }
 
-struct APToolbarItemHost<V: View>: APView {
-    @StateObject private var storage: APBarCustomViewStorage<V>
-    let content: APToolbarItem<V>
+struct APToolbarItemHostView<Content: View>: View {
+    @StateObject private var storage = APBarButtonItemStorage()
+    let item: APToolbarItem<Content>
     
-    public var body: some View {
-        storage.updateView(content.content)
-        return APEquatableView(id: storage.id) {
-            EmptyView()
+    var body: some View {
+        storage.updateItemStyle(item.placement.style)
+        return _VariadicView.Tree(APToolbarItemHostViewRoot(storage: storage)) {
+            item.content
         }
-        .transformPreference(APBarButtonItemPreferenceKey.self) { value in
-            value.append(APBarButtonItem(placement: content.placement, storage: storage))
+        .preference(key: APBarButtonItemPreferenceKey.self,
+                    value: [APBarButtonItem(role: item.placement.role, storage: storage)])
+    }
+}
+
+struct APToolbarItemHostViewRoot: _VariadicView_UnaryViewRoot {
+    var storage: APBarButtonItemStorage
+    private var hold: Bool
+    
+    func body(children: _VariadicView.Children) -> some View {
+        storage.updateContent(children)
+        return APEquatableView(id: storage.id) {
+            if hold {
+                EmptyView()
+            } else {
+                children
+            }
         }
     }
     
-    public init(_ content: APToolbarItem<V>) {
-        self.content = content
-        self._storage = .init(wrappedValue: .init(view: content.content))
+    public init(storage: APBarButtonItemStorage) {
+        self.storage = storage
+        self.hold = true
     }
 }

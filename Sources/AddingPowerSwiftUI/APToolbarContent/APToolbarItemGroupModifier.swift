@@ -6,30 +6,26 @@
 
 import SwiftUI
 
-public struct APToolbarItemGroupModifier<ToolBarContent: View>: ViewModifier {
-    let content: ToolBarContent
+public struct APToolbarItemGroupModifier<ToolBarContent: APToolbarContent>: ViewModifier {
+    let toolBarContent: ToolBarContent
     public func body(content: Content) -> some View {
         content
             .background(
-                self.content
+                ToolBarContent._makeContent(content: toolBarContent)
             )
     }
     
-    init(@APToolbarContentBuilder content: () -> ToolBarContent) {
-        self.content = content()
-    }
-    
-    init(content: ToolBarContent) {
-        self.content = content
+    init(toolBarContent: ToolBarContent) {
+        self.toolBarContent = toolBarContent
     }
 }
 
 extension View {
     public func apToolbar<Content>(@APViewBuilder content: () -> Content) -> some View where Content : View {
-        modifier(APToolbarItemGroupModifier(content: { APToolbarItemGroup(content: content) }))
+        modifier(APToolbarItemGroupModifier(toolBarContent: APToolbarItemGroup(content: content)))
     }
     
-    public func apToolbar<Content>(@APToolbarContentBuilder content: () -> Content) -> some View where Content : APView {
-        modifier(APToolbarItemGroupModifier(content: content))
+    public func apToolbar<Content>(@APToolbarContentBuilder content: () -> Content) -> some View where Content : APToolbarContent {
+        modifier(APToolbarItemGroupModifier(toolBarContent: content()))
     }
 }

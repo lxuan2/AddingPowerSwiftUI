@@ -11,6 +11,7 @@ import SwiftUI
 
 @frozen public struct APImage: Equatable {
     var provider: AnyImageProviderBox
+    var accentColor: Color?
     public static func == (lhs: APImage, rhs: APImage) -> Bool {
         lhs.provider.isEqual(rhs.provider)
     }
@@ -69,8 +70,10 @@ extension APImage {
 }
 
 extension APImage: View {
-    public var body: Image {
-        provider.asImage()
+    public var body: some View {
+        provider
+            .asImage()
+            ._trait(APImageTraitKey.self, self)
     }
 }
 
@@ -407,4 +410,9 @@ class ImageProviderBox<Base: ImageProvider>: AnyImageProviderBox {
     override func asUIImage() -> UIImage? {
         base.asUIImage()
     }
+}
+
+// MARK: - APImageTraitKey
+struct APImageTraitKey: _ViewTraitKey {
+    static var defaultValue: APImage? = nil
 }

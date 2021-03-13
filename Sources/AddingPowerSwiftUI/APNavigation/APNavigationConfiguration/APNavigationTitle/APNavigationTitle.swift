@@ -16,8 +16,6 @@ public struct APNavigationTitlePreferenceKey: PreferenceKey {
     }
 }
 
-
-
 extension View {
     public func apNavigationTitle(_ title: String) -> some View {
         preference(key: APNavigationTitlePreferenceKey.self, value: title)

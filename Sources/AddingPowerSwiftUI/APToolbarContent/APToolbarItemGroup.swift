@@ -10,18 +10,12 @@ public struct APToolbarItemGroup<Content> : APToolbarContent where Content : Vie
     var placement: APToolbarItemPlacement
     var content: Content
     
-    public init(placement: APToolbarItemPlacement = .automatic, @APViewBuilder content: () -> Content) {
+    public init(placement: APToolbarItemPlacement = .automatic, @ViewBuilder content: () -> Content) {
         self.placement = placement
         self.content = content()
     }
     
-    public typealias Body = Swift.Never
-    
-    public static func _makeContent(content: APToolbarItemGroup<Content>) -> APUnaryContent<Content> {
-        APUnaryContent(content.content)
-    }
-    
-    public func _makeContent(content: APToolbarItemGroup<Content>) -> some APView {
+    public static func _makeContent(content: APToolbarItemGroup<Content>) -> some View {
         APToolbarItemGroupHost(content)
     }
 }
@@ -37,5 +31,19 @@ struct APToolbarItemGroupHost<V: View>: APView {
     
     public init(_ content: APToolbarItemGroup<V>) {
         self.content = content
+    }
+}
+
+struct APToolbarItemGroupHostView<Content: View>: View {
+    @StateObject private var storage = APBarButtonItemStorage()
+    let item: APToolbarItem<Content>
+    
+    var body: some View {
+        storage.updateItemStyle(item.placement.style)
+        return _VariadicView.Tree(APToolbarItemHostViewRoot(storage: storage)) {
+            item.content
+        }
+        .preference(key: APBarButtonItemPreferenceKey.self,
+                    value: [APBarButtonItem(role: item.placement.role, storage: storage)])
     }
 }

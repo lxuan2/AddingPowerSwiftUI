@@ -9,8 +9,8 @@ import SwiftUI
 public class APNavigationPageController<InternelContent: View>: UIHostingController<APNavigationPageView<InternelContent>> {
 
     public init(rootView: InternelContent) {
-        super.init(rootView: APNavigationPageView(content: rootView, navigationItem: nil))
-        self.rootView = APNavigationPageView(content: rootView, navigationItem: self.navigationItem)
+        super.init(rootView: APNavigationPageView(content: rootView))
+        self.rootView = APNavigationPageView(content: rootView, navigationItem: self.navigationItem, vc: self)
     }
     
     @objc required dynamic init?(coder aDecoder: NSCoder) {
@@ -19,7 +19,7 @@ public class APNavigationPageController<InternelContent: View>: UIHostingControl
     
     public var wrappedRootView: InternelContent {
         set {
-            self.rootView = APNavigationPageView(content: newValue, navigationItem: self.navigationItem)
+            self.rootView = APNavigationPageView(content: newValue, navigationItem: self.navigationItem, vc: self)
         }
         
         get {

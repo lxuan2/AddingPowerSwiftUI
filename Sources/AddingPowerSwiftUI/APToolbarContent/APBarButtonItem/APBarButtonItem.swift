@@ -7,13 +7,12 @@
 import SwiftUI
 
 public struct APBarButtonItem: Equatable, Identifiable {
+    public private(set) var storage: APBarButtonItemStorage
+    public private(set) var role: APToolbarItemPlacement.Role
     
-    public private(set) var storage: APBarButtonItemStorageBase
-    public private(set) var placement: APToolbarItemPlacement
-    
-    public init(placement: APToolbarItemPlacement, storage: APBarButtonItemStorageBase) {
+    public init(role: APToolbarItemPlacement.Role, storage: APBarButtonItemStorage) {
         self.storage = storage
-        self.placement = placement
+        self.role = role
     }
     
     @inlinable var item: UIBarButtonItem {

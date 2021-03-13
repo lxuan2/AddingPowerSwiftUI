@@ -9,6 +9,7 @@ import SwiftUI
 public struct APNavigationPageView<Content: View>: View {
     let content: Content
     unowned var navigationItem: UINavigationItem!
+    unowned var vc: UIViewController!
     
     public var body: some View {
         content
@@ -53,6 +54,28 @@ public struct APNavigationPageView<Content: View>: View {
             }
             .onPreferenceChange(APNavigationLeftItemsSupplementBackButtonPreferenceKey.self) { isSupplement in
                 navigationItem.leftItemsSupplementBackButton = isSupplement
+            }
+            .onPreferenceChange(APBarButtonItemPreferenceKey.self) { items in
+                var leftBarButtonItems: [UIBarButtonItem] = []
+                var rightBarButtonItems: [UIBarButtonItem] = []
+                var bottomBarItems: [UIBarButtonItem] = []
+                for i in items {
+                    switch i.role {
+                    case .automatic:
+                        rightBarButtonItems.append(i.item)
+                    case .navigationBarLeading:
+                        leftBarButtonItems.append(i.item)
+                    case .navigationBarTrailing:
+                        rightBarButtonItems.append(i.item)
+                    case .bottomBar:
+                        bottomBarItems.append(i.item)
+                    default:
+                        rightBarButtonItems.append(i.item)
+                    }
+                }
+                navigationItem.rightBarButtonItems = rightBarButtonItems
+                navigationItem.leftBarButtonItems = leftBarButtonItems
+                vc.toolbarItems = bottomBarItems
             }
     }
 }
