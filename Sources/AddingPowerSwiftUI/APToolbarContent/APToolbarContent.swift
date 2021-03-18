@@ -25,6 +25,6 @@ extension APToolbarContent where _Body == Body._Body {
     }
 }
 
-extension Never: APToolbarContent, APView {
+extension Never: APToolbarContent {
     public static func _makeContent(content: Never) -> Never {}
 }

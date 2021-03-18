@@ -6,26 +6,42 @@
 
 import SwiftUI
 
-public struct APToolbarItemGroupModifier<ToolBarContent: APToolbarContent>: ViewModifier {
-    let toolBarContent: ToolBarContent
+public struct APToolbarItemGroupModifier<BarContent: APToolbarContent>: ViewModifier {
+    var toolBar: BarContent
+    
     public func body(content: Content) -> some View {
-        content
-            .background(
-                ToolBarContent._makeContent(content: toolBarContent)
-            )
+        _VariadicView.Tree(APToolbarItemGroupContainer(content: content)) {
+            BarContent._makeContent(content: toolBar)
+        }
     }
     
-    init(toolBarContent: ToolBarContent) {
-        self.toolBarContent = toolBarContent
+    init(toolBar: BarContent) {
+        self.toolBar = toolBar
+    }
+}
+
+struct APToolbarItemGroupContainer<Content: View>: _VariadicView_UnaryViewRoot {
+    let content: Content
+    @State private var id = UUID()
+    
+    func body(children: _VariadicView.Children) -> some View {
+        var list: [(_VariadicView.Children.Element, APToolbarItemPlacement, UUID)] = []
+        children.forEach {
+            list.append(($0, $0[APToolbarItemPlacementTraitKey.self], id))
+        }
+        return content
+            .transformPreference(APToolbarItemListKey.self) {
+                $0.storage.append(contentsOf: list)
+            }
     }
 }
 
 extension View {
     public func apToolbar<Content>(@APViewBuilder content: () -> Content) -> some View where Content : View {
-        modifier(APToolbarItemGroupModifier(toolBarContent: APToolbarItemGroup(content: content)))
+        modifier(APToolbarItemGroupModifier(toolBar: APToolbarItemGroup(content: content)))
     }
     
     public func apToolbar<Content>(@APToolbarContentBuilder content: () -> Content) -> some View where Content : APToolbarContent {
-        modifier(APToolbarItemGroupModifier(toolBarContent: content()))
+        modifier(APToolbarItemGroupModifier(toolBar: content()))
     }
 }

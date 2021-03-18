@@ -16,41 +16,30 @@ public struct APToolbarItem<Content> : APToolbarContent where Content : View {
     }
     
     public static func _makeContent(content: APToolbarItem<Content>) -> some View {
-        APToolbarItemHostView(item: content)
+        ComposeGroup(content.content)._trait(APToolbarItemPlacementTraitKey.self, content.placement)
     }
 }
 
-struct APToolbarItemHostView<Content: View>: View {
-    @StateObject private var storage = APBarButtonItemStorage()
-    let item: APToolbarItem<Content>
-    
-    var body: some View {
-        storage.updateItemStyle(item.placement.style)
-        return _VariadicView.Tree(APToolbarItemHostViewRoot(storage: storage)) {
-            item.content
-        }
-        .preference(key: APBarButtonItemPreferenceKey.self,
-                    value: [APBarButtonItem(role: item.placement.role, storage: storage)])
-    }
-}
+public struct ComposeGroup<Content: View>: View {
+    let content: Content
 
-struct APToolbarItemHostViewRoot: _VariadicView_UnaryViewRoot {
-    var storage: APBarButtonItemStorage
-    private var hold: Bool
-    
-    func body(children: _VariadicView.Children) -> some View {
-        storage.updateContent(children)
-        return APEquatableView(id: storage.id) {
-            if hold {
-                EmptyView()
-            } else {
-                children
-            }
+    public init(@ViewBuilder content: () -> Content) {
+        self.content = content()
+    }
+
+    public init(_ content: Content) {
+        self.content = content
+    }
+
+    public var body: some View {
+        _VariadicView.Tree(ComposeGroupRoot()) {
+            content
         }
     }
-    
-    public init(storage: APBarButtonItemStorage) {
-        self.storage = storage
-        self.hold = true
+
+    struct ComposeGroupRoot: _VariadicView_UnaryViewRoot {
+        func body(children: _VariadicView.Children) -> _VariadicView.Children {
+            children
+        }
     }
 }
