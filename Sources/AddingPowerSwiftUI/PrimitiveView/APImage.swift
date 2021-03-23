@@ -9,9 +9,8 @@ import SwiftUI
 
 // MARK: - APImage
 
-@frozen public struct APImage: Equatable {
+public struct APImage: Equatable {
     var provider: AnyImageProviderBox
-    var accentColor: Color?
     public static func == (lhs: APImage, rhs: APImage) -> Bool {
         lhs.provider.isEqual(rhs.provider)
     }

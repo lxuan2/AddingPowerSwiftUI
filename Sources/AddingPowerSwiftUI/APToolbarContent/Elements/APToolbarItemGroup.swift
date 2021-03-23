@@ -16,6 +16,18 @@ public struct APToolbarItemGroup<Content> : APToolbarContent where Content : Vie
     }
     
     public static func _makeContent(content: APToolbarItemGroup<Content>) -> some View {
-        content.content._trait(APToolbarItemPlacementTraitKey.self, content.placement)
+        HostView(item: content)
+    }
+    
+    struct HostView: View {
+        @StateObject private var storage = APBarButtonItemStorage(isGroup: true)
+        var item: APToolbarItemGroup<Content>
+        
+        var body: some View {
+            item
+                .content
+                ._trait(APBarButtonItemKey.self, APBarButtonItem(storage: storage))
+                ._trait(APToolbarItemPlacementKey.self, item.placement)
+        }
     }
 }

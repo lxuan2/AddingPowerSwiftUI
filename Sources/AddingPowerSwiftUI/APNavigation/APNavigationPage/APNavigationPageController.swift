@@ -27,3 +27,13 @@ public class APNavigationPageController<InternelContent: View>: UIHostingControl
         }
     }
 }
+
+public struct APNavigationPageView<Content: View>: View {
+    var content: Content
+    weak var navigationItem: UINavigationItem?
+    weak var vc: UIViewController?
+    
+    public var body: some View {
+        content.modifier(APNavigationPageConfigurationModifier(navigationItem: navigationItem, vc: vc))
+    }
+}

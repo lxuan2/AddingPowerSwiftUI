@@ -19,17 +19,10 @@ public struct APNavigationBarItem {
     
     public enum BackButtonDisplayMode: Equatable, Hashable {
         
-        case `default`
+        case automatic
         
         case generic
         
         case minimal
     }
-    
-    var backBarButtonItem: UUID?
-    
-    var leftBarButtonItems: UUID?
-    
-    var rightBarButtonItems: UUID?
-
 }

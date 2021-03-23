@@ -27,8 +27,8 @@ public struct _APStackNavigationView: View {
     public var body: some View {
         APNavigationHostingView(nvc: nvc)
             .environment(\.apNavigationController, APNavigationControllerHolder(vc: nvc))
-            .onPreferenceChange(APNavigationBarHiddenPreferenceKey.self) { hidden in
-                nvc.setNavigationBarHidden(hidden, animated: true)
+            .onPreferenceChange(APNavigationBarHiddenKey.self) { hidden in
+                nvc.isNavigationBarHidden = hidden ?? false
             }
             .edgesIgnoringSafeArea(.all)
             .onReceive(configuration.rootInit) {
