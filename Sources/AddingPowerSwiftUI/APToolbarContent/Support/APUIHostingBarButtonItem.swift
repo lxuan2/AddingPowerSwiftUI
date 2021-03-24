@@ -8,8 +8,8 @@
 import SwiftUI
 
 class APUIHostingBarButtonItem: UIBarButtonItem {
-    var _rootView: _VariadicView.Children.Element
-    var hostView: UIHostingView<_VariadicView.Children.Element>?
+    private var _rootView: _VariadicView.Children.Element
+    private var hostView: UIHostingView<_VariadicView.Children.Element>?
     
     var rootView: _VariadicView.Children.Element {
         get {

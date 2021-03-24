@@ -8,22 +8,14 @@
 import SwiftUI
 
 struct APBarButtonItem: Equatable {
-    var storage: APBarButtonItemStorage
+    var storage: APBarButtonItemStorageBase
+    var key: AnyHashable
     
     func getBarButtonItem() -> UIBarButtonItem {
-        storage.getBarButtonItem()
+        storage.getBarButtonItem(key: key)
     }
     
     func getView() -> UIView {
-        storage.getView()
-    }
-    
-    static func == (lhs: APBarButtonItem, rhs: APBarButtonItem) -> Bool {
-        lhs.storage === rhs.storage
+        storage.getView(key: key)
     }
 }
-
-struct APBarButtonItemKey: _ViewTraitKey {
-    static var defaultValue: APBarButtonItem? = nil
-}
-

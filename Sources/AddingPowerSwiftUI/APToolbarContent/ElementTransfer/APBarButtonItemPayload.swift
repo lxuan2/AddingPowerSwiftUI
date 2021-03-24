@@ -13,6 +13,18 @@ struct APBarButtonItemPayload: Equatable {
     var bottomBarItems: [APBarButtonItem] = []
     var backBarButtonItem: APBarButtonItem?
     var title: APBarButtonItem?
+    
+    mutating func concat(_ payload: APBarButtonItemPayload) {
+        self.topLeftBarButtonItems.append(contentsOf: payload.topLeftBarButtonItems)
+        self.topRightBarButtonItems.append(contentsOf: payload.topRightBarButtonItems)
+        self.bottomBarItems.append(contentsOf: payload.bottomBarItems)
+        if let item = payload.backBarButtonItem {
+            self.backBarButtonItem = item
+        }
+        if let item = payload.title {
+            self.title = item
+        }
+    }
 }
 
 struct APToolBarItemPayloadKey: PreferenceKey {
@@ -31,5 +43,3 @@ struct APToolBarItemPayloadKey: PreferenceKey {
         }
     }
 }
-
-
