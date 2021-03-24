@@ -27,9 +27,9 @@ public struct APNavigationViewStyleConfiguration {
     }
 }
 
-// MARK: - APNavigationViewStyleCanvas
+// MARK: - APNavigationViewStyleKey
 
-struct APNavigationViewStyleCanvas: APStyleCanvas {
+struct APNavigationViewStyleKey: APStyleKey {
     static func makeDefault(configuration: APNavigationViewStyleConfiguration) -> some View {
         APStackNavigationViewStyle().makeBody(configuration: configuration)
     }
@@ -38,6 +38,6 @@ struct APNavigationViewStyleCanvas: APStyleCanvas {
 // MARK: - APNavigationViewStyleModifier
 extension View {
     public func apNavigationViewStyle<S: APNavigationViewStyle>(_ style: S) -> some View {
-        self.style(APNavigationViewStyleCanvas.self, style.makeBody)
+        self.style(APNavigationViewStyleKey.self, style.makeBody)
     }
 }

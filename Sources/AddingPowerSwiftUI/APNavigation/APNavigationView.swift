@@ -21,8 +21,8 @@ public struct APNavigationView<Content: APView>: View {
 
 struct APResolvedNavigationView: View {
     var body: some View {
-        APNavigationViewStyleCanvas
-            .makeBody(configuration: APNavigationViewStyleConfiguration())
+        APStyleView(key: APNavigationViewStyleKey.self,
+                    configuration: APNavigationViewStyleConfiguration())
             .edgesIgnoringSafeArea(.all)
     }
 }
