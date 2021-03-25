@@ -15,8 +15,12 @@ public struct APToolbarItemGroup<Content> : APToolbarContent where Content : Vie
         self.content = content()
     }
     
-    public static func _makeContent(content: APToolbarItemGroup<Content>) -> some View {
-        HostView(item: content)
+    public var contentBody: Never {
+        fatalError()
+    }
+    
+    public var body: some View {
+        HostView(item: self)
     }
     
     struct HostView: View {

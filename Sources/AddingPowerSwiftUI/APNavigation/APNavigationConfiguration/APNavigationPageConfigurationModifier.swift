@@ -61,5 +61,8 @@ struct APNavigationPageConfigurationModifier: ViewModifier {
                 navigationItem.leftItemsSupplementBackButton = isSupplement ?? false
             }
             .modifier(APToolbarModifier(navigationItem: navigationItem, vc: vc))
+            .onPreferenceChange(APNavigationBarHiddenKey.self) { hidden in
+                vc.navigationController?.isNavigationBarHidden = hidden ?? false
+            }
     }
 }

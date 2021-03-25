@@ -9,7 +9,22 @@ import SwiftUI
 
 // MARK: - APStyleView
 
-public struct APStyleView<Key: APStyleKey> {
+public struct APStyleView<Key: APStyleKey>: View {
+    var configuration: Key.Configuration
+    
+    public init(key: Key.Type = Key.self, configuration: Key.Configuration) {
+        self.configuration = configuration
+    }
+    
+    public var body: some View {
+        _APStyleView<Key>(configuration: configuration)
+            .edgesIgnoringSafeArea(.all)
+    }
+}
+
+// MARK: - _APStyleView
+
+public struct _APStyleView<Key: APStyleKey> {
     var configuration: Key.Configuration
     
     public init(key: Key.Type = Key.self, configuration: Key.Configuration) {
@@ -17,7 +32,7 @@ public struct APStyleView<Key: APStyleKey> {
     }
 }
 
-extension APStyleView: UIViewControllerRepresentable {
+extension _APStyleView: UIViewControllerRepresentable {
     public func makeCoordinator() -> Coordinator {
         Coordinator()
     }

@@ -6,25 +6,20 @@
 
 import SwiftUI
 
-public protocol APToolbarContent {
-    associatedtype Body : APToolbarContent
-    @APToolbarContentBuilder var body: Body { get }
-    associatedtype _Body : View
-    static func _makeContent(content: Self) -> _Body
+public protocol APToolbarContent: View {
+    associatedtype ContentBody : APToolbarContent
+    @APToolbarContentBuilder var contentBody: ContentBody { get }
 }
 
-extension APToolbarContent where Body == Never {
-    public var body: Never {
-        fatalError()
-    }
-}
-
-extension APToolbarContent where _Body == Body._Body {
-    public static func _makeContent(content: Self) -> _Body {
-        Body._makeContent(content: content.body)
+extension APToolbarContent where ContentBody == Body {
+    public var body: ContentBody {
+        contentBody
     }
 }
 
 extension Never: APToolbarContent {
-    public static func _makeContent(content: Never) -> Never {}
+    public typealias ContentBody = Never
+    public var contentBody: Never {
+        fatalError()
+    }
 }

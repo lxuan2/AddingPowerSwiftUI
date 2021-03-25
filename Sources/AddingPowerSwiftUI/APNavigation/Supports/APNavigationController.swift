@@ -24,13 +24,13 @@ public class APNavigationController: UINavigationController, ObservableObject {
         }
     }
     public unowned var _root: APNavigationPageController<ModifiedContent<APAnyUniqueView?, _SafeAreaIgnoringLayout>>
-
+    
     public override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         navigationBar.prefersLargeTitles = true
     }
-
+    
     public init() {
         let x: APAnyUniqueView? = nil
         let r = APNavigationPageController(rootView: ModifiedContent(content: x, modifier: _SafeAreaIgnoringLayout(edges: [.horizontal, .bottom])))

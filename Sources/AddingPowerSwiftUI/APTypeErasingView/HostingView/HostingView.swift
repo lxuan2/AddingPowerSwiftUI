@@ -16,10 +16,10 @@ public typealias ClassView = UIView
 @available(iOS 13.0, tvOS 13.0, *)
 @available(OSX, unavailable)
 @available(watchOS, unavailable)
-open class UIHostingView<Content: View>: UIView {
-    private let hostingController: UIHostingController<Content>
+open class UIHostingView<ContentBody: View>: UIView {
+    private let hostingController: UIHostingController<ContentBody>
     
-    public var rootView: Content {
+    public var rootView: ContentBody {
         get {
             hostingController.rootView
         } set {
@@ -27,7 +27,7 @@ open class UIHostingView<Content: View>: UIView {
         }
     }
     
-    public required init(rootView: Content) {
+    public required init(rootView: ContentBody) {
         hostingController = UIHostingController(rootView: rootView)
         
         super.init(frame: .zero)

@@ -11,7 +11,7 @@ public struct APToolbarItemGroupModifier<BarContent: APToolbarContent>: ViewModi
     
     public func body(content: Content) -> some View {
         _VariadicView.Tree(APToolbarItemGroupContainer(content: content)) {
-            BarContent._makeContent(content: toolBar)
+            toolBar
         }
     }
     

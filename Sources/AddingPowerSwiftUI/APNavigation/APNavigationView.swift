@@ -23,6 +23,5 @@ struct APResolvedNavigationView: View {
     var body: some View {
         APStyleView(key: APNavigationViewStyleKey.self,
                     configuration: APNavigationViewStyleConfiguration())
-            .edgesIgnoringSafeArea(.all)
     }
 }
