@@ -7,38 +7,31 @@
 
 import SwiftUI
 
-public class APUnbridgedNavigation_ChildController<InternelContent: View>: UIHostingController<APUnbridgedNavigation_Child<InternelContent>> {
+public class APUnbridgedNavigation_ChildController<Root: View>: UIHostingController<ModifiedContent<Root, APUnbridgedNavigation_ChildModifier>> {
 
-    public init(rootView: InternelContent) {
-        super.init(rootView: APUnbridgedNavigation_Child(content: rootView))
-        self.navigationItem.leftItemsSupplementBackButton = true
-        self.rootView = APUnbridgedNavigation_Child(content: rootView, navigationItem: self.navigationItem, vc: self)
+    public init(rootView: Root) {
+        super.init(rootView: rootView.modifier(.init(configuration: configuration)))
+        configuration.setViewController(self)
+        navigationItem.leftItemsSupplementBackButton = true
     }
     
     @objc required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public var wrappedRootView: InternelContent {
+    public var wrappedRootView: Root {
         set {
-            self.rootView = APUnbridgedNavigation_Child(content: newValue, navigationItem: self.navigationItem, vc: self)
+            self.rootView = newValue.modifier(.init(configuration: configuration))
         }
-        
         get {
             self.rootView.content
         }
     }
     
-    private var isNavigationBarHidden = false
+    private var configuration = APUnbridgedNavigationConfiguration(viewController: nil)
     
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        navigationController?.setToolbarHidden(toolbarItems?.isEmpty ?? true, animated: animated)
-        navigationController?.setNavigationBarHidden(isNavigationBarHidden, animated: animated)
-    }
-    
-    public override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        isNavigationBarHidden = navigationController?.isNavigationBarHidden ?? false
+        configuration.viewWillAppear()
     }
 }
