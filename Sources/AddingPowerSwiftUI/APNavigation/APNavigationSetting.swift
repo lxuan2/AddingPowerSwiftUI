@@ -1,5 +1,5 @@
 //
-//  APNavigationConfiguration.swift
+//  APNavigationSetting.swift
 //  
 //
 //
@@ -115,28 +115,6 @@ extension View {
     }
 }
 
-// MARK: - APNavigationLeftItemsSupplementBackButtonKey
-
-public struct APNavigationLeftItemsSupplementBackButtonKey: PreferenceKey {
-    public typealias Value = Bool?
-    
-    public static var defaultValue: Value = nil
-    
-    public static func reduce(value: inout Value, nextValue: () -> Value) {
-        if let next = nextValue() {
-            value = next
-        }
-    }
-}
-
-extension View {
-    public func apNavigationLeftItemsSupplementBackButton(_ isSupplement: Bool?) -> some View {
-        transformPreference(APNavigationLeftItemsSupplementBackButtonKey.self) { value in
-            APNavigationLeftItemsSupplementBackButtonKey.reduce(value: &value, nextValue: { isSupplement })
-        }
-    }
-}
-
 // MARK: - APNavigationPromptKey
 
 public struct APNavigationPromptKey: PreferenceKey {
@@ -177,6 +155,51 @@ extension View {
     public func apNavigationTitle(_ title: String?) -> some View {
         transformPreference(APNavigationTitleKey.self) { value in
             APNavigationTitleKey.reduce(value: &value, nextValue: { title })
+        }
+    }
+}
+
+// MARK: - APNavigationBarItem
+
+public struct APNavigationBarItem {
+    
+    public enum TitleDisplayMode: Equatable, Hashable {
+        
+        case automatic
+        
+        case inline
+        
+        case large
+        
+        func asUIElement() -> UINavigationItem.LargeTitleDisplayMode {
+            switch self {
+            case .automatic:
+                return .automatic
+            case .inline:
+                return .never
+            case .large:
+                return .always
+            }
+        }
+    }
+    
+    public enum BackButtonDisplayMode: Equatable, Hashable {
+        
+        case automatic
+        
+        case generic
+        
+        case minimal
+        
+        func asUIElement() -> UINavigationItem.BackButtonDisplayMode {
+            switch self {
+            case .automatic:
+                return .default
+            case .generic:
+                return .generic
+            case .minimal:
+                return .minimal
+            }
         }
     }
 }

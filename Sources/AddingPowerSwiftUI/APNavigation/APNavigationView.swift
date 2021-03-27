@@ -6,15 +6,15 @@
 
 import SwiftUI
 
-public struct APNavigationView<Content: APView>: View {
+public struct APNavigationView<Content: View>: View {
     let content: Content
     
     public var body: some View {
         APResolvedNavigationView()
-            .fill(APNavigationViewStyleConfiguration.Content.self, with: content)
+            .fill(APNavigationViewContentKey.self, source: content)
     }
     
-    public init(@APViewBuilder content: () -> Content) {
+    public init(@ViewBuilder content: () -> Content) {
         self.content = content()
     }
 }

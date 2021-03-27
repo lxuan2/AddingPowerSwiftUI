@@ -18,26 +18,16 @@ public struct APNavigationLink<Label: View, Destination: View>: View {
     }
     
     private func pushViewController() {
-        if coordinator.dvc == nil, let nvc = navigationController.vc {
-            let dvc = APNavigationPageController(rootView: destination)
+        if coordinator.dvc == nil, let nvc = navigationController.controller {
+            let dvc = APUnbridgedNavigation_ChildController(rootView: destination)
             coordinator.dvc = dvc
-            dvc.modalPresentationStyle = .overFullScreen
-            dvc.view.alpha = 0
-            dvc.view.isUserInteractionEnabled = false
-            nvc.present(dvc, animated: false) {
-                dvc.dismiss(animated: false) {
-                    dvc.modalPresentationStyle = .automatic
-                    dvc.view.alpha = 1
-                    dvc.view.isUserInteractionEnabled = true
-                    nvc.pushViewController(dvc, animated: true)
-                }
-            }
+            nvc.pushViewController(dvc, animated: true)
         }
     }
     
     private func updateViewController() {
         if let dvc = coordinator.dvc {
-            (dvc as! APNavigationPageController<Destination>).wrappedRootView = destination
+            (dvc as! APUnbridgedNavigation_ChildController<Destination>).wrappedRootView = destination
         }
     }
     

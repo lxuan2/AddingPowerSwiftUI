@@ -6,16 +6,16 @@
 
 import SwiftUI
 
-public struct APNavigationControllerHolder {
-    public weak var vc: UINavigationController?
+public struct APNavigationControllerBox {
+    public weak var controller: UINavigationController?
 }
 
 public struct APNavigationControllerHolderEnvironmentKey: EnvironmentKey {
-    public static let defaultValue = APNavigationControllerHolder()
+    public static let defaultValue = APNavigationControllerBox()
 }
 
 extension EnvironmentValues {
-    public var apNavigationController: APNavigationControllerHolder  {
+    public var apNavigationController: APNavigationControllerBox  {
         get {
             return self[APNavigationControllerHolderEnvironmentKey.self]
         }

@@ -22,6 +22,7 @@ struct APBarItemGroupList {
             if placement == .automatic {
                 storage.append(.payload(currentPayload!))
                 currentPayload = nil
+                currentAuto = group
                 return
             }
             appendGroupToPayload(group: group, placement: placement, payload: &currentPayload!)
@@ -30,6 +31,8 @@ struct APBarItemGroupList {
             if placement != .automatic {
                 storage.append(.auto(currentAuto!))
                 currentAuto = nil
+                currentPayload = APBarButtonItemPayload()
+                appendGroupToPayload(group: group, placement: placement, payload: &currentPayload!)
                 return
             }
             currentAuto!.append(contentsOf: group)
