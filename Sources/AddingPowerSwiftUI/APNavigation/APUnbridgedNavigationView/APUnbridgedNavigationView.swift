@@ -64,4 +64,25 @@ public class APUnbridgedNavigationController<Content: View>: UINavigationControl
         fatalError("init(coder:) has not been implemented")
     }
     
+    public override func pushViewController(_ viewController: UIViewController, animated: Bool) {
+        if animated {
+            viewController.modalPresentationStyle = .overFullScreen
+            viewController.view.alpha = 0
+            viewController.view.isUserInteractionEnabled = false
+            present(viewController, animated: false) {
+                viewController.dismiss(animated: false) {
+                    viewController.modalPresentationStyle = .automatic
+                    viewController.view.alpha = 1
+                    viewController.view.isUserInteractionEnabled = true
+                    super.pushViewController(viewController, animated: false)
+                    super.popViewController(animated: false)
+                    DispatchQueue.main.async {
+                        super.pushViewController(viewController, animated: true)
+                    }
+                }
+            }
+        } else {
+            super.pushViewController(viewController, animated: false)
+        }
+    }
 }
