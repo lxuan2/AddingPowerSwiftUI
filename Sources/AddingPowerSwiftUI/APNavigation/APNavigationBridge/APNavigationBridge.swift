@@ -1,5 +1,5 @@
 //
-//  APUnbridgedNavigationConfiguration.swift
+//  APNavigationBridge.swift
 //  
 //
 //  Created by Xuan Li on 3/27/21.
@@ -7,21 +7,28 @@
 
 import SwiftUI
 
-struct APUnbridgedNavigationConfiguration {
-    class Provider {
+// MARK: - APNavigationBridge
+
+struct APNavigationBridge {
+    final class Provider {
         unowned var vc: UIViewController!
+        unowned var nvc: UINavigationController!
         var animationEnabled: Bool
-        var isNavigationBarHidden: Bool?
+        var animationEnabledOnInit: Bool
+        var isNavigationBarHidden: Bool? = nil
+        var isPayloadInited: Bool = false
+        var isInited: Bool = false
         
-        init(viewController: UIViewController?, animationEnabled: Bool = true) {
-            self.vc = viewController
+        init(nvc: UINavigationController?, vc: UIViewController?, animationEnabled: Bool, animationEnabledOnInit: Bool) {
+            self.vc = vc
+            self.nvc = nvc
             self.animationEnabled = animationEnabled
-            self.isNavigationBarHidden = nil
+            self.animationEnabledOnInit = animationEnabledOnInit
         }
     }
     
-    init(viewController: UIViewController?, animationEnabled: Bool = true) {
-        provider = .init(viewController: viewController, animationEnabled: animationEnabled)
+    init(nvc: UINavigationController?, vc: UIViewController?, animationEnabled: Bool = true, animationEnabledOnInit: Bool = true) {
+        provider = .init(nvc: nvc, vc: vc, animationEnabled: animationEnabled, animationEnabledOnInit: animationEnabledOnInit)
     }
     
     private var provider: Provider
@@ -87,42 +94,64 @@ struct APUnbridgedNavigationConfiguration {
     }
     
     var backButtonTitle: String? {
-            provider.vc.navigationItem.backButtonTitle
+        provider.vc.navigationItem.backButtonTitle
     }
     
     func setNavigationBarHidden(_ hidden: Bool?) {
-        provider.vc.navigationController?.setNavigationBarHidden(hidden ?? false, animated: provider.animationEnabled)
-        provider.isNavigationBarHidden = hidden ?? false
+        let h = hidden ?? false
+        var animated = provider.animationEnabled
+        if provider.isNavigationBarHidden == nil {
+            animated = animated && provider.animationEnabledOnInit
+        }
+        provider.nvc.setNavigationBarHidden(h, animated: animated)
+        provider.isNavigationBarHidden = h
     }
     
     var navigationBarHidden: Bool {
-        provider.vc.navigationController!.isNavigationBarHidden
+        provider.nvc.isNavigationBarHidden
     }
     
     func setBarItemPayload(_ payload: APBarButtonItemPayload?) {
+        var animated = provider.animationEnabled
+        if !provider.isPayloadInited {
+            provider.isPayloadInited = true
+            animated = animated && provider.animationEnabledOnInit
+        }
         provider.vc.navigationItem.titleView = payload?.title?.getView()
         provider.vc.navigationItem.setRightBarButtonItems(payload?.topRightBarButtonItems.map { $0.getBarButtonItem() },
-                                                          animated: provider.animationEnabled)
+                                                          animated: animated)
         provider.vc.navigationItem.setLeftBarButtonItems(payload?.topLeftBarButtonItems.map { $0.getBarButtonItem() },
-                                                         animated: provider.animationEnabled)
+                                                         animated: animated)
         provider.vc.navigationItem.backBarButtonItem = payload?.backBarButtonItem.map { $0.getBarButtonItem() }
         provider.vc.setToolbarItems(payload?.bottomBarItems.map { $0.getBarButtonItem() },
-                                    animated: provider.animationEnabled)
-        provider.vc.navigationController?.setToolbarHidden(provider.vc.toolbarItems!.isEmpty,
-                                                           animated: provider.animationEnabled)
+                                    animated: animated)
+        provider.nvc.setToolbarHidden(provider.vc.toolbarItems!.isEmpty,animated: animated)
+        
     }
     
-    func setViewController(_ viewController: UIViewController?) {
-        provider.vc = viewController
+    func setViewController(_ vc: UIViewController?) {
+        provider.vc = vc
+    }
+    
+    func setNavigationController(_ nvc: UINavigationController?) {
+        provider.nvc = nvc
+    }
+    
+    func setAnimationEnabled(_ enabled: Bool) {
+        provider.animationEnabled = enabled
     }
     
     func viewWillAppear() {
-        let toolbarHidden = provider.vc.toolbarItems?.isEmpty ?? true
-        if toolbarHidden != provider.vc.navigationController?.isToolbarHidden {
-            provider.vc.navigationController?.setToolbarHidden(toolbarHidden, animated: provider.animationEnabled)
-        }
-        if let hidden = provider.isNavigationBarHidden, provider.vc.navigationController?.isNavigationBarHidden != hidden {
-            provider.vc.navigationController?.setNavigationBarHidden(hidden, animated: provider.animationEnabled)
+        if provider.isInited {
+            let toolbarHidden = provider.vc.toolbarItems?.isEmpty ?? true
+            if toolbarHidden != provider.nvc.isToolbarHidden {
+                provider.nvc.setToolbarHidden(toolbarHidden, animated: provider.animationEnabled)
+            }
+            if let hidden = provider.isNavigationBarHidden, provider.nvc.isNavigationBarHidden != hidden {
+                provider.nvc.setNavigationBarHidden(hidden, animated: provider.animationEnabled)
+            }
+        } else {
+            provider.isInited = true
         }
     }
 }

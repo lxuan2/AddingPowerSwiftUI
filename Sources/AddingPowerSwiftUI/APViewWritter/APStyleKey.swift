@@ -42,7 +42,7 @@ public struct APStyleView<Key: APStyleKey>: View {
 
 extension View {
     func style<Key: APStyleKey, Content: View>(_ key: Key.Type = Key.self, body: @escaping (Key.Configuration) -> Content) -> some View {
-        environment(\.[HashableType(Key.self)], APStylePayload(makeContent: body))
+        environment(Key.self, APStylePayload(makeContent: body))
     }
 }
 

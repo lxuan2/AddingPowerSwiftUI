@@ -18,7 +18,7 @@ public struct APStackNavigationView: View {
     @Environment var source: _VariadicView.Children?
     
     public var body: some View {
-        APUnbridgedNavigationView(content: source?[0], areLargeTitlesEnabled: true)
+        APUnbridgedNavigationView(content: source?[0])
     }
     
     public init(_source: Environment<_VariadicView.Children?>) {

@@ -1,5 +1,5 @@
 //
-//  APUnbridgedNavigation_Child.swift
+//  APNavigationBridgeModifier.swift
 //  
 //
 //  Created by Xuan Li on 3/27/21.
@@ -7,17 +7,10 @@
 
 import SwiftUI
 
-//public struct APUnbridgedNavigation_Child<Content: View>: View {
-//    var content: Content
-//    
-//    public var body: some View {
-//        content
-//            
-//    }
-//}
+// MARK: - APNavigationBridgeModifier
 
-public struct APUnbridgedNavigation_ChildModifier: ViewModifier {
-    var configuration: APUnbridgedNavigationConfiguration
+public struct APNavigationBridgeModifier: ViewModifier {
+    var configuration: APNavigationBridge
     
     public func body(content: Content) -> some View {
         content
@@ -39,11 +32,11 @@ public struct APUnbridgedNavigation_ChildModifier: ViewModifier {
             .onPreferenceChange(APNavigationBackButtonTitleKey.self) {
                 configuration.setBackButtonTitle($0)
             }
-            .onPreferenceChange(APNavigationBarHiddenKey.self) { hidden in
-                configuration.setNavigationBarHidden(hidden)
+            .onPreferenceChange(APNavigationBarHiddenKey.self) {
+                configuration.setNavigationBarHidden($0)
             }
-            .onPreferenceChange(APToolBarItemPayloadKey.self) { payload in
-                configuration.setBarItemPayload(payload)
+            .onPreferenceChange(APToolBarItemPayloadKey.self) {
+                configuration.setBarItemPayload($0)
             }
     }
 }

@@ -10,7 +10,7 @@ public struct APNavigationLink<Label: View, Destination: View>: View {
     let destination: Destination
     let label: Label
     @StateObject var coordinator = Coordinator()
-    @Environment(\.apNavigationController) var navigationController
+    @Environment(\.apNVC) var nvc
     
     public var body: some View {
         updateViewController()
@@ -18,8 +18,8 @@ public struct APNavigationLink<Label: View, Destination: View>: View {
     }
     
     private func pushViewController() {
-        if coordinator.dvc == nil, let nvc = navigationController.controller {
-            let dvc = APUnbridgedNavigation_ChildController(rootView: destination)
+        if coordinator.dvc == nil, let nvc = nvc.controller {
+            let dvc = APNavigationBridgedController(rootView: destination, navigationController: nvc)
             coordinator.dvc = dvc
             nvc.pushViewController(dvc, animated: true)
         }
@@ -27,7 +27,7 @@ public struct APNavigationLink<Label: View, Destination: View>: View {
     
     private func updateViewController() {
         if let dvc = coordinator.dvc {
-            (dvc as! APUnbridgedNavigation_ChildController<Destination>).wrappedRootView = destination
+            (dvc as! APNavigationBridgedController<Destination>).rootView = destination
         }
     }
     
