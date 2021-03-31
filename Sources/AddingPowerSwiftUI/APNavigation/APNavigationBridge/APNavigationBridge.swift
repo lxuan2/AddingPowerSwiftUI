@@ -126,7 +126,6 @@ struct APNavigationBridge {
         provider.vc.setToolbarItems(payload?.bottomBarItems.map { $0.getBarButtonItem() },
                                     animated: animated)
         provider.nvc.setToolbarHidden(provider.vc.toolbarItems!.isEmpty,animated: animated)
-        
     }
     
     func setViewController(_ vc: UIViewController?) {

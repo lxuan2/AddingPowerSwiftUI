@@ -7,9 +7,9 @@
 
 import SwiftUI
 
-class APUIHostingBarButtonItem: UIBarButtonItem {
+class APHostingBarButtonItem: UIBarButtonItem {
     private var _rootView: _VariadicView.Children.Element
-    private var hostView: UIHostingView<_VariadicView.Children.Element>?
+    private var hostView: UIHostingView<_VariadicView.Children.Element>!
     
     var rootView: _VariadicView.Children.Element {
         get {
@@ -22,14 +22,10 @@ class APUIHostingBarButtonItem: UIBarButtonItem {
     }
     
     private func willUpdateRootView(_ newRoot: _VariadicView.Children.Element) {
-        guard let hv = hostView else {
-            fatalError()
-        }
-        if hv.rootView.id != newRoot.id {
+        if hostView.rootView.id != newRoot.id {
             hostView = UIHostingView(rootView: newRoot)
             customView = hostView
         }
-        _rootView = newRoot
         // more...
     }
     

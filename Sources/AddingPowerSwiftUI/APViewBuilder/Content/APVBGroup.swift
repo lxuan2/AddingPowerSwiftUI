@@ -1,12 +1,12 @@
 //
-//  APGroup.swift
+//  APVBGroup.swift
 //  
 //
 //
 
 import SwiftUI
 
-public struct APGroup<Content: View>: APView {
+public struct APVBGroup<Content: View>: APView {
     @usableFromInline
     var content: Content
     @StateObject private var viewRoot = APVariadicView_MultiViewRoot(env: .group)

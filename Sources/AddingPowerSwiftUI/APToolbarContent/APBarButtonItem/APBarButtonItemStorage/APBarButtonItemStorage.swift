@@ -34,7 +34,7 @@ class APBarButtonItemStorage: APBarButtonItemStorageBase {
 
 class _APBarButtonItemStorage {
     var rootView: _VariadicView.Children.Element?
-    weak var subscriber: APUIHostingBarButtonItem?
+    weak var subscriber: APHostingBarButtonItem?
     weak var viewSubscriber: UIHostingView<_VariadicView.Children.Element>?
     
     init(rootView: _VariadicView.Children.Element? = nil) {
@@ -45,7 +45,7 @@ class _APBarButtonItemStorage {
         if let s = subscriber {
             return s
         }
-        let s = APUIHostingBarButtonItem(rootView: rootView!)
+        let s = APHostingBarButtonItem(rootView: rootView!)
         subscriber = s
         return s
     }

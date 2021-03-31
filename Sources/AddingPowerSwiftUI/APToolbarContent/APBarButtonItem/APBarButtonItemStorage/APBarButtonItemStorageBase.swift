@@ -24,3 +24,12 @@ class APBarButtonItemStorageBase: ObservableObject, Equatable {
         lhs === rhs
     }
 }
+
+struct APBarButtonItemStorageBox {
+    var storage: APBarButtonItemStorageBase
+}
+
+struct APBarButtonItemStorageBoxKey: _ViewTraitKey {
+    static var defaultValue: APBarButtonItemStorageBox? = nil
+}
+
