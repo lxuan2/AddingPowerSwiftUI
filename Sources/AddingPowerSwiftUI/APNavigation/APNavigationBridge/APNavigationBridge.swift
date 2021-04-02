@@ -136,6 +136,10 @@ struct APNavigationBridge {
         provider.nvc = nvc
     }
     
+    func getNavigationController() -> UINavigationController {
+        provider.nvc
+    }
+    
     func setAnimationEnabled(_ enabled: Bool) {
         provider.animationEnabled = enabled
     }

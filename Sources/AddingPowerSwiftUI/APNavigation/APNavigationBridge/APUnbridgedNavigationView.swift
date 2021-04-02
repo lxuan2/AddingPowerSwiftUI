@@ -47,7 +47,7 @@ struct APUnbridgedNavigationRepresentable<Content: View>: UIViewControllerRepres
         var rootViewController: APNavigationBridgedController<Content>
         
         init(content: Content, nvc: APUnbridgedNavigationController) {
-            rootViewController = .init(rootView: content, navigationController: nvc, animationEnabledOnInit: false)
+            rootViewController = .init(rootView: content, navigationController: nvc, binding: .constant(true), animationEnabledOnInit: false)
         }
     }
 }
@@ -70,6 +70,12 @@ public final class APUnbridgedNavigationController: UINavigationController, Obse
         } else {
             super.pushViewController(viewController, animated: false)
         }
+    }
+    
+    public func pushBridgedViewController<Content: View>(content: Content, binding: Binding<Bool>, animated: Bool) -> APNavigationBridgedController<Content> {
+        let dvc = APNavigationBridgedController(rootView: content, navigationController: self, binding: binding)
+        pushViewController(dvc, animated: animated)
+        return dvc
     }
 }
 
